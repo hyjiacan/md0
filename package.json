@@ -1,6 +1,6 @@
 {
   "name": "md0",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An ugly lib to make markdown into html",
   "main": "src/md0.js",
   "scripts": {

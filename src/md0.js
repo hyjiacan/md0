@@ -172,7 +172,7 @@
                 return key
             })
             // keyword
-            .replace(new RegExp(mergeString('(^|[^a-zA-Z0-9_$])(', keywords.join('|'), ')([^a-zA-Z0-9_$])', 'g')),
+            .replace(new RegExp(mergeString('(^|[^a-zA-Z0-9_$])(', keywords.join('|'), ')([^a-zA-Z0-9_$])'), 'g'),
                 function (match, group1, group2, group3) {
                     var key = mergeString('@', i++, '@')
                     buffer[key] = mergeString(group1, '<span class="md0-code-block-keyword">', group2, '</span>', group3)
