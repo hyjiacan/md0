@@ -7,16 +7,16 @@
 ### NodeJS
 
 ```javascript
-const md0 = require('md0')
+var md0 = require('md0')
 
-let markdown = '# title1\n## title2'
-let option = {
+var markdown = '# title1\n## title2'
+var option = {
     codeIndex: true,
     codeHeight: 0,
     titleAnchor: true,
     catalog: false
 }
-let html = md0(markdown, option)
+var html = md0(markdown, option)
 console.log(html)
 ```
 
@@ -27,14 +27,14 @@ console.log(html)
 <link rel="stylesheet" href="/path/to/md0.css"/>
 
 <script>
-let markdown = '# title1\n## title2'
-let option = {
+var markdown = '# title1\n## title2'
+var option = {
     codeIndex: true,
     codeHeight: 0,
     titleAnchor: true,
     catalog: false
 }
-let html = md0(markdown, option)
+var html = md0(markdown, option)
 console.log(html)
 </script>
 ```
@@ -47,16 +47,6 @@ console.log(html)
 |codeHeight|Number|0|代码块的最大高度，为0表示不限制|
 |titleAnchor|Boolean|true|是否在标题前显示导航锚点|
 |catalog|Boolean|false|是否生成目录|
-
-### 编程
-
-```javascript
-const md0 = require('./src/md0')
-
-let content = '# header1'
-
-let html = md0(content)
-```
 
 ### CLI
 

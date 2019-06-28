@@ -1,7 +1,3 @@
-/* jshint -W033 */
-
-/* jshint esversion:6 */
-
 (function (global, factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
         module.exports = factory()
@@ -10,7 +6,7 @@
     }
 // Pass this if window is not defined yet
 })(typeof window !== "undefined" ? window : this, function () {
-    const KEYWORDS = {
+    var KEYWORDS = {
         _: [
             'return', 'try', 'catch', 'finally', 'for', 'while'
         ],
@@ -74,9 +70,13 @@
      * 转义表
      * @type {{}}
      */
-    let escapeMap = {}
+    var escapeMap = {}
 
-    let headers = []
+    var headers = []
+
+    function mergeString() {
+        return [].slice.apply(arguments).join('')
+    }
 
     /**
      * 获取行的类型
@@ -129,7 +129,9 @@
      * @return {*}
      */
     function removeEmptyRows(rows) {
-        return rows.filter(row => !/^\s*$/.test(row))
+        return rows.filter(function (row) {
+            return !/^\s*$/.test(row)
+        })
     }
 
     /**
@@ -142,156 +144,136 @@
         // 注释行
         if (/^(&nbsp;)*(\/\/|#|--)/.test(row)) {
             // ignore line comment row
-            return row.replace(/(\/\/|#|--).*/, match => {
-                return `<span class="md0-code-block-comment">${match}</span>`
+            return row.replace(/(\/\/|#|--).*/, function (match) {
+                return mergeString('<span class="md0-code-block-comment">', match, '/span>')
             })
         }
         // 行内注释
-        let temp = /^(.*?)(\/\/|#|--)(.*)$/.exec(row)
-        let tag = ''
-        let comment = ''
+        var temp = /^(.*?)(\/\/|#|--)(.*)$/.exec(row)
+        var tag = ''
+        var comment = ''
         if (temp) {
             [, row, tag, comment] = temp
         }
-        let buffer = {}
-        let i = 0
-        let keywords = getKeywords(lang)
-        let tpl = row
+        var buffer = {}
+        var i = 0
+        var keywords = getKeywords(lang)
+        var tpl = row
         // string
-            .replace(/(['"])(.+?)\1/g, (match, group1, group2) => {
-                let key = `@${i++}@`
-                buffer[key] = `<span class="md0-code-block-text">${group1}${group2}${group1}</span>`
+            .replace(/(['"])(.+?)\1/g, function (match, group1, group2) {
+                var key = mergeString('@', i++, '@')
+                buffer[key] = mergeString('<span class="md0-code-block-text">', group1, group2, group1, '</span>')
                 return key
             })
             // numeric
-            .replace(/(&nbsp;)(\d+)([^'"])?/g, (match, group1, group2, group3) => {
-                let key = `@${i++}@`
-                buffer[key] = `${group1 || ''}<span class="md0-code-block-number">${group2}</span>${group3 || ''}`
+            .replace(/(&nbsp;)(\d+)([^'"])?/g, function (match, group1, group2, group3) {
+                var key = mergeString('@', i++, '@')
+                buffer[key] = mergeString(group1 || '', '<span class="md0-code-block-number">', group2, '</span>', group3 || '')
                 return key
             })
             // keyword
-            .replace(new RegExp(`(^|[^a-zA-Z0-9_$])(${keywords.join('|')})([^a-zA-Z0-9_$])`, 'g'), (match, group1, group2, group3) => {
-                let key = `@${i++}@`
-                buffer[key] = `${group1}<span class="md0-code-block-keyword">${group2}</span>${group3}`
-                return key
-            })
+            .replace(new RegExp(mergeString('(^|[^a-zA-Z0-9_$])(', keywords.join('|'), ')([^a-zA-Z0-9_$])', 'g')),
+                function (match, group1, group2, group3) {
+                    var key = mergeString('@', i++, '@')
+                    buffer[key] = mergeString(group1, '<span class="md0-code-block-keyword">', group2, '</span>', group3)
+                    return key
+                })
             // inline comment
-            .replace(/(\/\/|#).+$/, match => {
-                let key = `@${i++}@`
-                buffer[key] = `<span class="md0-code-block-comment">${match}</span>`
+            .replace(/(\/\/|#).+$/, function (match) {
+                var key = mergeString('@', i++, '@')
+                buffer[key] = mergeString('<span class="md0-code-block-comment">', match, '</span>')
                 return key
             })
-        return tpl.replace(/@\d+@/g, match => {
+        return tpl.replace(/@\d+@/g, function (match) {
             return buffer[match]
-        }) + (tag ? `<span class="md0-code-block-comment">${tag}${comment}</span>` : '')
+        }) + (tag ? mergeString('<span class="md0-code-block-comment">', tag, comment, '</span>') : '')
     }
 
-    let renders = {
-        common(str) {
-            let buffer = {}
-            let i = 0
-            let tpl = str
+    var renders = {
+        common: function (str) {
+            var buffer = {}
+            var tpl = str
             // image
-                .replace(/!\[(.+?)\]\((.*?)\)/g, (match, group1, group2) => {
-                    // let key = `@${i++}@`
-                    // buffer[key] = `<img src="${group2}" alt="${group1}" />`
-                    // return key
-                    return `<img src="${group2}" alt="${group1}" />`
+                .replace(/!\[(.+?)\]\((.*?)\)/g, function (match, group1, group2) {
+                    return mergeString('<img src="', group2, '" alt="', group1, '" />')
                 })
                 // hyper link
-                .replace(/\[(.*?)\]\((.*?)\)/g, (match, group1, group2) => {
-                    // let key = `@${i++}@`
-                    // buffer[key] = `<a href="${group2}" class="md0-link">${group1}</a>`
-                    // return key
-                    return `<a href="${group2}" class="md0-link">${group1}</a>`
+                .replace(/\[(.*?)\]\((.*?)\)/g, function (match, group1, group2) {
+                    return mergeString('<a href="', group2, '" class="md0-link">', group1, '"</a>')
                 })
                 // bold
-                .replace(/([_*]{2})(.+?)\1/g, (match, group1, group2) => {
-                    // let key = `@${i++}@`
-                    // buffer[key] = `<b>${group2}</b>`
-                    // return key
-                    return `<b>${group2}</b>`
+                .replace(/([_*]{2})(.+?)\1/g, function (match, group1, group2) {
+                    return mergeString('<b>', group2, '</b>')
                 })
                 // italic
-                .replace(/([_*])(.+?)\1/g, (match, group1, group2) => {
-                    // let key = `@${i++}@`
-                    // buffer[key] = `<i>${group2}</i>`
-                    // return key
-                    return `<i>${group2}</i>`
+                .replace(/([_*])(.+?)\1/g, function (match, group1, group2) {
+                    return mergeString('<i>', group2, '</i>')
                 })
                 // inline code
-                .replace(/(`)(.+?)\1/g, (match, group1, group2) => {
-                    // let key = `@${i++}@`
-                    // buffer[key] = `<span class="md0-code-inline">${group2}</span>`
-                    // return key
-                    return `<span class="md0-code-inline">${group2}</span>`
+                .replace(/(`)(.+?)\1/g, function (match, group1, group2) {
+                    return mergeString('<span class="md0-code-inline">', group2, '</span>')
                 })
                 // Strikethrough
-                .replace(/([-~]{2})(.+?)\1/g, (match, group1, group2) => {
-                    // let key = `@${i++}@`
-                    // buffer[key] = `<span class="md0-strikethrough">${group2}</span>`
-                    // return key
-                    return `<span class="md0-strikethrough">${group2}</span>`
+                .replace(/([-~]{2})(.+?)\1/g, function (match, group1, group2) {
+                    return mergeString('<span class="md0-strikethrough">', group2, '</span>')
                 })
 
-            return tpl.replace(/@\d+@/g, match => {
+            return tpl.replace(/@\d+@/g, function (match) {
                 return buffer[match]
             })
         },
-        title(str, option) {
+        title: function (str, option) {
             // console.log(str)
             str = str.replace(/^\s*/g, '')
-            let text = str.replace(/#/g, '')
-            let level = str.length - text.length
-            let tag = 'h' + level
+            var text = str.replace(/#/g, '')
+            var level = str.length - text.length
+            var tag = 'h' + level
             text = renders.common(text)
             // remove tags, white space
-            let pureText = text.replace(/(<.+?>|\s+)/g, '').trim()
+            var pureText = text.replace(/(<.+?>|\s+)/g, '').trim()
             headers.push({
-                level,
+                level: level,
                 text: pureText
             })
-            let anchor = option.titleAnchor ? `<a href="#${pureText}" class="md0-title-anchor">#</a>` : ''
-            return `<${tag} id="${pureText}" class="md0-title-${tag}">
-            ${anchor}
-            <span class="md0-title-text">${text.trimLeft()}</span>
-        </${tag}>`
+            var anchor = option.titleAnchor ? mergeString('<a href="#', pureText, '" class="md0-title-anchor">#</a>') : ''
+            return mergeString('<', tag, ' id="', pureText, '" class="md0-title-', tag, '">', anchor,
+                '<span class="md0-title-text">', text.replace(/^\s+/, ''), '</span></', tag, '>')
         },
-        codeBlock(rows, option) {
+        codeBlock: function (rows, option) {
             // remove empty rows
             // rows = removeEmptyRows(rows)
             // remove the 1st row and get the language
             // if not specified, set 'text' as default
-            let defineLine = rows.shift()
+            var defineLine = rows.shift()
             while (!defineLine) {
                 defineLine = rows.shift()
             }
-            let temp = /^(\s*)```(.+?)\s*$/.exec(defineLine)
-            let indent = temp[1]
-            let lang = temp[2] || 'text'
+            var temp = /^(\s*)```(.+?)\s*$/.exec(defineLine)
+            var indent = temp[1]
+            var lang = temp[2] || 'text'
             // remove the last row
             rows.pop()
 
-            let html = [`<div class="md0-code-block" data-lang="${lang}">`]
+            var html = [mergeString('<div class="md0-code-block" data-lang="', lang, '">')]
 
-            html.push(`<div class="md0-code-block-header"><span class="md0-code-block-lang">${lang}</span></div>`)
-            let style = ''
+            html.push(mergeString('<div class="md0-code-block-header"><span class="md0-code-block-lang">', lang, '</span></div>'))
+            var style = ''
             if (option.codeHeight) {
-                style = `overflow: auto; max-height: ${option.codeHeight}`
+                style = mergeString('overflow: auto; max-height: ', option.codeHeight)
             }
-            html.push(`<div class="md0-code-block-body" style="${style}">`)
+            html.push(mergeString('<div class="md0-code-block-body" style="', style, '">'))
             // 行号
             if (option.codeIndex) {
-                html.push(`<div class="md0-code-block-gutter">`)
-                rows.forEach((str, i) => {
-                    html.push(`<span class="md0-code-block-rowindex">${i + 1}</span>`)
+                html.push('<div class="md0-code-block-gutter">')
+                rows.forEach(function (str, i) {
+                    html.push(mergeString('<span class="md0-code-block-rowindex">', i + 1, '</span>'))
                 })
                 html.push('</div>')
             }
-            html.push(`<div class="md0-code-block-content">`)
-            let blockCommentFounded = false
-            rows.forEach(str => {
-                let temp = str
+            html.push('<div class="md0-code-block-content">')
+            var blockCommentFounded = false
+            rows.forEach(function (str) {
+                var temp = str
                 // 移除多余的缩进
                     .substring(indent.length)
                     .replace(/\t/g, '    ')
@@ -303,7 +285,7 @@
                     // 找到开始处
                     if (str.indexOf('/*') !== -1 || str.indexOf('"""') !== -1) {
                         blockCommentFounded = true
-                        temp = `<span class="md0-code-block-comment">${temp}</span>`
+                        temp = mergeString('<span class="md0-code-block-comment">', temp, '</span>')
                     } else {
                         // highlight
                         temp = codeHighlight(temp, lang)
@@ -311,24 +293,24 @@
                 } else if (str.indexOf('*/') !== -1 || str.indexOf('"""') !== -1) {
                     // 找到结束处
                     blockCommentFounded = false
-                    temp = `<span class="md0-code-block-comment">${temp}</span>`
+                    temp = mergeString('<span class="md0-code-block-comment">', temp, '</span>')
                 } else {
                     // 注释中内容
-                    temp = `<span class="md0-code-block-comment">${temp}</span>`
+                    temp = mergeString('<span class="md0-code-block-comment">', temp, '</span>')
                 }
-                html.push(`<div class="md0-code-block-line">${temp}</div>`)
+                html.push(mergeString('<div class="md0-code-block-line">', temp, '</div>'))
             })
             html.push('</div>')
             html.push('</div>')
             html.push('</div>')
             return html.join('\n')
         },
-        table(rows) {
+        table: function (rows) {
             // remove empty rows
             rows = removeEmptyRows(rows)
-            let html = ['<table class="md0-table">']
-            let header = rows.shift().split('|')
-            let align = rows.shift().split('|').map(col => {
+            var html = ['<table class="md0-table">']
+            var header = rows.shift().split('|')
+            var align = rows.shift().split('|').map(function (col) {
                 if (/^\s*:-+:\s*$/.test(col)) {
                     return 'md-0-table-align-center'
                 }
@@ -339,16 +321,17 @@
                 return 'md-0-table-align-left'
             })
             html.push('<thead><tr>')
-            for (let i = 1; i < header.length - 1; i++) {
-                html.push(`<th class="md0-table-cell ${align[i]}">${renders.common(header[i])}</th>`)
+            var i
+            for (i = 1; i < header.length - 1; i++) {
+                html.push(mergeString('<th class="md0-table-cell ', align[i], '">', renders.common(header[i]), '</th>'))
             }
             html.push('</tr></thead>')
             html.push('<tbody>')
-            for (let i = 0; i < rows.length; i++) {
-                let row = rows[i].split('|')
+            for (i = 0; i < rows.length; i++) {
+                var row = rows[i].split('|')
                 html.push('<tr>')
-                for (let i = 1; i < header.length - 1; i++) {
-                    html.push(`<td class="md0-table-cell ${align[i]}">${renders.common(row[i])}</td>`)
+                for (var j = 1; j < header.length - 1; j++) {
+                    html.push(mergeString('<td class="md0-table-cell ', align[j], '">', renders.common(row[j]), '</td>'))
                 }
                 html.push('</tr>')
             }
@@ -356,34 +339,34 @@
             html.push('</table>')
             return html.join('\n')
         },
-        list(rows) {
+        list: function (rows) {
             // remove empty rows
             rows = removeEmptyRows(rows)
 
-            let firstItem = rows[0]
-            let indent = 0
-            let types = []
-            let reg = /^\s*[*-]\s/
-            let type = reg.test(firstItem) ? 'ul' : 'ol'
+            var firstItem = rows[0]
+            var indent = 0
+            var types = []
+            var reg = /^\s*[*-]\s/
+            var type = reg.test(firstItem) ? 'ul' : 'ol'
             types.push(type)
 
-            let html = [`<${type} class="md0-list">`]
+            var html = [mergeString('<', type, ' class="md0-list">')]
 
-            for (let i = 0; i < rows.length; i++) {
-                let row = rows[i]
-                let type = reg.test(row) ? 'ul' : 'ol'
-                let itemIndent = row.length - row.replace(/^\s*/, '').length
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i]
+                var subType = reg.test(row) ? 'ul' : 'ol'
+                var itemIndent = row.length - row.replace(/^\s*/, '').length
                 if (itemIndent > indent) {
                     // sub
-                    types.unshift(type)
-                    html.push(`<${type} class="md0-list">`)
+                    types.unshift(subType)
+                    html.push(mergeString('<', subType, ' class="md0-list">'))
                 } else if (itemIndent < indent) {
-                    html.push(`</${types.shift()}>`)
+                    html.push(mergeString('</', types.shift(), '>'))
                 }
                 indent = itemIndent
                 row = row.replace(/^\s*(\*|-|[0-9]+\.?)\s/, '')
                 // 是否是选择列表
-                let t = getRowType(row)
+                var t = getRowType(row)
                 if (t === 'check') {
                     row = row.replace(/^\[ \]/, '')
                     row = renders.check(renders.common(row))
@@ -393,30 +376,38 @@
                 } else {
                     row = renders.common(row)
                 }
-                html.push(`<li class="md0-list-item">${row}</li>`)
+                html.push(mergeString('<li class="md0-list-item">', row, '</li>'))
             }
 
-            html.push(`</${types[0]}>`)
+            html.push(mergeString('</', types[0], '>'))
             return html.join('\n')
         },
-        quote(rows) {
-            rows = rows.map(str => renders.common(str.replace(/^\s*>/, '')))
-            return `<blockquote class="md0-quote">${rows.join('')}</blockquote>`
+        quote: function (rows) {
+            rows = rows.map(function (str) {
+                return renders.common(str.replace(/^\s*>/, ''))
+            })
+            return mergeString('<blockquote class="md0-quote">', rows.join(''), '</blockquote>')
         },
-        newline: (rows) => rows.length > 1 ? '<br/>' : '',
-        line: () => '<hr class="md0-line" />',
-        check: str => `<label class="md0-checkbox">
-    <input type="checkbox" disabled="disabled" />${str.replace(/^\[ \]/, '')}
-  </label>`,
-        checked: str => `<label class="md0-checkbox md0-checkbox-checked">
-    <input type="checkbox" disabled="disabled" checked="checked" />${str.replace(/^\[x\]/, '')}
-  </label>`
+        newline: function (rows) {
+            return rows.length > 1 ? '<br/>' : ''
+        },
+        line: function () {
+            return '<hr class="md0-line" />'
+        },
+        check: function (str) {
+            return mergeString('<label class="md0-checkbox"><input type="checkbox" disabled="disabled" />',
+                str.replace(/^\[ \]/, ''), '</label>')
+        },
+        checked: function (str) {
+            return mergeString('<label class="md0-checkbox md0-checkbox-checked"><input type="checkbox" disabled="disabled" checked="checked" />',
+                str.replace(/^\[x\]/, ''), '</label>')
+        }
     }
 
     function getCodeBlock(rows, index) {
-        let temp = [rows[index++]]
+        var temp = [rows[index++]]
         for (; index < rows.length; index++) {
-            let row = rows[index]
+            var row = rows[index]
             temp.push(row)
             if (getRowType(row) === 'codeBlock') {
                 break
@@ -426,13 +417,13 @@
     }
 
     function getListBlock(rows, index, option) {
-        let temp = [rows[index++]]
-        let emptyLineCount = 0
-        let buffer
+        var temp = [rows[index++]]
+        var emptyLineCount = 0
+        var buffer, _
         // 遇到两个空行或隔一行后不是列表时，列表结束
         for (; index < rows.length; index++) {
-            let row = rows[index]
-            let rowType = getRowType(row)
+            var row = rows[index]
+            var rowType = getRowType(row)
             if (rowType === 'newline') {
                 emptyLineCount++
                 if (emptyLineCount === 2) {
@@ -445,15 +436,15 @@
             }
             emptyLineCount = 0
             if (rowType === 'codeBlock') {
-                let _ = temp.pop();
+                _ = temp.pop();
                 [index, buffer] = getCodeBlock(rows, index)
                 temp.push(_ + renders.codeBlock(buffer, option))
             } else if (rowType === 'quote') {
-                let _ = temp.pop();
+                _ = temp.pop();
                 [index, buffer] = getQuoteBlock(rows, index)
                 temp.push(_ + renders.quote(buffer))
             } else if (rowType === 'table') {
-                let _ = temp.pop();
+                _ = temp.pop();
                 [index, buffer] = getTableBlock(rows, index)
                 temp.push(_ + renders.table(buffer))
             } else if (row) {
@@ -465,11 +456,11 @@
     }
 
     function getQuoteBlock(rows, index) {
-        let temp = [rows[index++]]
-        let indent = -1
+        var temp = [rows[index++]]
+        var indent = -1
         for (; index < rows.length; index++) {
-            let row = rows[index]
-            let rowIndent = row.length - row.replace(/^\s*/, '').length
+            var row = rows[index]
+            var rowIndent = row.length - row.replace(/^\s*/, '').length
             if (indent === -1) {
                 indent = rowIndent
             }
@@ -485,9 +476,9 @@
     }
 
     function getTableBlock(rows, index) {
-        let temp = [rows[index++]]
+        var temp = [rows[index++]]
         for (; index < rows.length; index++) {
-            let row = rows[index]
+            var row = rows[index]
             if (getRowType(row) !== 'table') {
                 break
             }
@@ -497,10 +488,10 @@
     }
 
     function getParagraphBlock(rows, index, option) {
-        let temp = []
+        var temp = []
         for (; index < rows.length; index++) {
-            let row = rows[index]
-            let type = getRowType(row)
+            var row = rows[index]
+            var type = getRowType(row)
             if (['codeBlock', 'list', 'table', 'newline', 'title', 'quote'].indexOf(type) !== -1) {
                 break
             }
@@ -511,9 +502,9 @@
 
 
     function getEmptyBlock(rows, index) {
-        let temp = [rows[index++]]
+        var temp = [rows[index++]]
         for (; index < rows.length; index++) {
-            let row = rows[index]
+            var row = rows[index]
             if (getRowType(row) !== 'newline') {
                 break
             }
@@ -528,28 +519,35 @@
      * @param {object} [option]
      */
     function render(markdownContent, option) {
-        let temp = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-        let rows = temp
+        var temp = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+        var rows = temp
         // 处理转义
-            .replace(/\\(.)/g, (match, ch) => {
-                let code = ch.charCodeAt(0)
+            .replace(/\\(.)/g, function (match, ch) {
+                var code = ch.charCodeAt(0)
                 escapeMap[code] = ch
-                return `$ESCAPE${code}EPACSE$`
+                return mergeString('$ESCAPE', code, 'EPACSE$')
             })
             .split('\n')
-        let html = ['<div class="md0-container">']
-
-        option = {
-            titleAnchor: true,
-            codeIndex: true,
-            ...option
+        var html = ['<div class="md0-container">']
+        option = option || {}
+        if (!option.hasOwnProperty('titleAnchor')) {
+            option.titleAnchor = true
+        }
+        if (!option.hasOwnProperty('codeIndex')) {
+            option.codeIndex = true
+        }
+        if (!option.hasOwnProperty('codeHeight')) {
+            option.codeHeight = 0
+        }
+        if (!option.hasOwnProperty('catalog')) {
+            option.catalog = false
         }
 
-        for (let i = 0; i < rows.length; i++) {
-            let row = rows[i]
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i]
 
-            let type = getRowType(row)
-            let buffer
+            var type = getRowType(row)
+            var buffer
 
             if (type === 'title') {
                 html.push(renders.title(row, option))
@@ -604,24 +602,24 @@
         }
         html.push('</div>')
         if (option.catalog) {
-            let catalog = headers.map(h => {
-                return `<li><a href="#${h.text}">${fillDot(h.level)}# ${h.text}</a></li>`
+            var catalog = headers.map(function (h) {
+                return mergeString('<li><a href="#', h.text, '">', fillCatalogItem(h.level), '# ', h.text, '</a></li>')
             })
             catalog.unshift('<ul class="md0-catalog">')
             catalog.push('</ul>')
             html.unshift(catalog.join('\n'))
         }
-        return html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, (match, code) => {
+        return html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
             return String.fromCharCode(code)
         })
     }
 
-    function fillDot(n) {
-        let temp = []
-        for (let i = 1; i < n; i++) {
+    function fillCatalogItem(n) {
+        var temp = []
+        for (var i = 1; i < n; i++) {
             temp.push('··')
         }
-        return `<span class="md0-catalog-dots">${temp.join('')}</span>`
+        return mergeString('<span class="md0-catalog-dots">', temp.join(''), '</span>')
     }
 
     return render

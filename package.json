@@ -1,7 +1,28 @@
 {
   "name": "md0",
-  "version": "1.0.0",
+  "version": "0.1.0",
+  "description": "An ugly lib to make markdown into html",
+  "main": "src/md0.js",
   "scripts": {
     "start": "node parser.js docs/sample.md docs/sample.html"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyjiacan/md0.git"
+  },
+  "keywords": [
+    "md",
+    "markdown",
+    "html"
+  ],
+  "author": "hyjiacan",
+  "license": "MIT",
+  "files": [
+    "docs",
+    "src"
+  ],
+  "bugs": {
+    "url": "https://github.com/hyjiacan/md0/issues"
+  },
+  "homepage": "https://hyjiacan.github.io/md0/"
 }
