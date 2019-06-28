@@ -18,7 +18,6 @@
   "author": "hyjiacan",
   "license": "MIT",
   "files": [
-    "docs",
     "src"
   ],
   "bugs": {

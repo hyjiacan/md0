@@ -6,6 +6,10 @@
 
 ### NodeJS
 
+```bash
+npm install md0
+```
+
 ```javascript
 var md0 = require('md0')
 
