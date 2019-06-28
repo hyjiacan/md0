@@ -1,0 +1,7 @@
+{
+  "name": "md0",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node parser.js docs/sample.md docs/sample.html"
+  }
+}
