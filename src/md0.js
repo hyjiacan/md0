@@ -66,14 +66,6 @@
         return [].concat(KEYWORDS._, KEYWORDS[lang] || [])
     }
 
-    /**
-     * 转义表
-     * @type {{}}
-     */
-    var escapeMap = {}
-
-    var headers = []
-
     function mergeString() {
         return [].slice.apply(arguments).join('')
     }
@@ -222,7 +214,7 @@
                 return buffer[match]
             })
         },
-        title: function (str, option) {
+        title: function (str, option, catalog) {
             // console.log(str)
             str = str.replace(/^\s*/g, '')
             var text = str.replace(/#/g, '')
@@ -231,7 +223,7 @@
             text = renders.common(text)
             // remove tags, white space
             var pureText = text.replace(/(<.+?>|\s+)/g, '').trim()
-            headers.push({
+            catalog.push({
                 level: level,
                 text: pureText
             })
@@ -500,7 +492,6 @@
         return [--index, temp]
     }
 
-
     function getEmptyBlock(rows, index) {
         var temp = [rows[index++]]
         for (; index < rows.length; index++) {
@@ -513,12 +504,30 @@
         return [--index, temp]
     }
 
+    function fillCatalogItem(n) {
+        var temp = []
+        for (var i = 1; i < n; i++) {
+            temp.push('··')
+        }
+        return mergeString('<span class="md0-catalog-dots">', temp.join(''), '</span>')
+    }
+
     /**
      * Convert markdown content into html
      * @param {string} markdownContent Markdown content
      * @param {object} [option]
      */
     function render(markdownContent, option) {
+        /**
+         * 转义表
+         * @type {{}}
+         */
+        var escapeMap = {}
+        /**
+         * 目录
+         * @type {Array}
+         */
+        var catalog = []
         var temp = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
         var rows = temp
         // 处理转义
@@ -550,7 +559,7 @@
             var buffer
 
             if (type === 'title') {
-                html.push(renders.title(row, option))
+                html.push(renders.title(row, option, catalog))
                 continue
             }
 
@@ -602,24 +611,13 @@
         }
         html.push('</div>')
         if (option.catalog) {
-            var catalog = headers.map(function (h) {
+            html.unshift('<ul class="md0-catalog">\n' + catalog.map(function (h) {
                 return mergeString('<li><a href="#', h.text, '">', fillCatalogItem(h.level), '# ', h.text, '</a></li>')
-            })
-            catalog.unshift('<ul class="md0-catalog">')
-            catalog.push('</ul>')
-            html.unshift(catalog.join('\n'))
+            }).join('\n') + '</ul>\n')
         }
         return html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
-            return String.fromCharCode(code)
+            return escapeMap[code]
         })
-    }
-
-    function fillCatalogItem(n) {
-        var temp = []
-        for (var i = 1; i < n; i++) {
-            temp.push('··')
-        }
-        return mergeString('<span class="md0-catalog-dots">', temp.join(''), '</span>')
     }
 
     return render

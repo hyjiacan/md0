@@ -1,342 +1,182 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <link rel="stylesheet" href="./md0.css" />
+    <meta charset="UTF-8">
+    <title>md0 一个丑陋的markdown解析工具</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/Base64/1.0.2/base64.min.js"></script>
+    <link href="https://cdn.bootcss.com/codemirror/5.48.0/codemirror.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/codemirror/5.48.0/codemirror.min.js"></script>
+    <script src="https://cdn.bootcss.com/codemirror/5.48.0/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdn.bootcss.com/codemirror/5.48.0/mode/css/css.min.js"></script>
+    <script src="https://cdn.bootcss.com/codemirror/5.48.0/mode/markdown/markdown.min.js"></script>
+    <script src="https://raw.githubusercontent.com/hyjiacan/md0/master/src/md0.js"></script>
+    <style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #css, #markdown, #script, #html {
+        height: 50%;
+        width: 50%;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        position: relative;
+        padding-top: 33px;
+        border: 1px solid #cacaca;
+        overflow: hidden;
+    }
+
+    .content {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+
+    #css:before {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: #8c8c8c;
+        color: #FFF;
+        content: 'CSS';
+        padding: 6px;
+    }
+
+    #script:before {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: #8c8c8c;
+        color: #FFF;
+        content: 'JAVASCRIPT';
+        padding: 6px;
+    }
+
+    #markdown:before {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: #8c8c8c;
+        color: #FFF;
+        content: 'MARKDOWN';
+        padding: 6px;
+    }
+
+    #html:before {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        background-color: #8c8c8c;
+        color: #FFF;
+        content: 'HTML';
+        padding: 6px;
+    }
+
+    #css, #markdown {
+        float: left;
+    }
+
+    #script, #html {
+        float: left;
+    }
+
+    .CodeMirror {
+        border: 1px solid #eee;
+        height: auto;
+    }
+
+    #btn-reload {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        width: 60px;
+        height: 32px;
+    }
+    </style>
 </head>
-
 <body>
-  <ul class="md0-catalog">
-<li><a href="#一级标题"><span class="md0-catalog-dots"></span># 一级标题</a></li>
-<li><a href="#二级标题"><span class="md0-catalog-dots">··</span># 二级标题</a></li>
-<li><a href="#三级标题"><span class="md0-catalog-dots">····</span># 三级标题</a></li>
-<li><a href="#四级标题"><span class="md0-catalog-dots">······</span># 四级标题</a></li>
-<li><a href="#五级标题"><span class="md0-catalog-dots">········</span># 五级标题</a></li>
-<li><a href="#六级红色标题"><span class="md0-catalog-dots">··········</span># 六级红色标题</a></li>
-<li><a href="#列表"><span class="md0-catalog-dots">··</span># 列表</a></li>
-<li><a href="#无序列表"><span class="md0-catalog-dots">····</span># 无序列表</a></li>
-<li><a href="#有序列表"><span class="md0-catalog-dots">····</span># 有序列表</a></li>
-<li><a href="#引用"><span class="md0-catalog-dots">··</span># 引用</a></li>
-<li><a href="#样式"><span class="md0-catalog-dots">··</span># 样式</a></li>
-<li><a href="#代码"><span class="md0-catalog-dots">··</span># 代码</a></li>
-<li><a href="#列表内样式"><span class="md0-catalog-dots">··</span># 列表内样式</a></li>
-<li><a href="#选中框"><span class="md0-catalog-dots">··</span># 选中框</a></li>
-<li><a href="#表格"><span class="md0-catalog-dots">··</span># 表格</a></li>
-</ul>
-<div class="md0-container">
-<h1 id="一级标题" class="md0-title-h1"><a href="#一级标题" class="md0-title-anchor">#</a><span class="md0-title-text">一级标题</span></h1>
-<h2 id="二级标题" class="md0-title-h2"><a href="#二级标题" class="md0-title-anchor">#</a><span class="md0-title-text">二级标题</span></h2>
-<h3 id="三级标题" class="md0-title-h3"><a href="#三级标题" class="md0-title-anchor">#</a><span class="md0-title-text">三级标题</span></h3>
-<h4 id="四级标题" class="md0-title-h4"><a href="#四级标题" class="md0-title-anchor">#</a><span class="md0-title-text">四级标题</span></h4>
-<h5 id="五级标题" class="md0-title-h5"><a href="#五级标题" class="md0-title-anchor">#</a><span class="md0-title-text">五级标题</span></h5>
-<h6 id="六级红色标题" class="md0-title-h6"><a href="#六级红色标题" class="md0-title-anchor">#</a><span class="md0-title-text">六级<span style="color: red;">红色</span>标题</span></h6>
-
-<hr class="md0-line" />
-
-<h2 id="列表" class="md0-title-h2"><a href="#列表" class="md0-title-anchor">#</a><span class="md0-title-text">列表</span></h2>
-
-<h3 id="无序列表" class="md0-title-h3"><a href="#无序列表" class="md0-title-anchor">#</a><span class="md0-title-text">无序列表</span></h3>
-
-<ul class="md0-list">
-<li class="md0-list-item">无序列表</li>
-<li class="md0-list-item">无序列表<span class="md0-code-inline">代码</span> <b>粗体</b> <i>斜体</i></li>
-<li class="md0-list-item">无序列表</li>
-<ul class="md0-list">
-<li class="md0-list-item">二级无序列表</li>
-<li class="md0-list-item">二级无序列表<span class="md0-code-inline">代码</span> <b>粗体</b> <i>斜体</i></li>
-<li class="md0-list-item">二级无序列表</li>
-<li class="md0-list-item">二级无序列表</li>
-</ul>
-<li class="md0-list-item">无序列表</li>
-<li class="md0-list-item">无序列表</li>
-</ul>
-<h3 id="有序列表" class="md0-title-h3"><a href="#有序列表" class="md0-title-anchor">#</a><span class="md0-title-text">有序列表</span></h3>
-
-<ol class="md0-list">
-<li class="md0-list-item">有序列表</li>
-<li class="md0-list-item">有序列表</li>
-<li class="md0-list-item">有序列表<span class="md0-code-inline">代码</span> <b>粗体</b> <i>斜体</i></li>
-<li class="md0-list-item">有序列表</li>
-<li class="md0-list-item">有序列表</li>
-</ol>
-<h2 id="引用" class="md0-title-h2"><a href="#引用" class="md0-title-anchor">#</a><span class="md0-title-text">引用</span></h2>
-
-<blockquote class="md0-quote"> 引用文本 引用文本的第二行 引用文本的第三行 引用文本中的 <span class="md0-code-inline">代码</span> <b>粗体</b> <i>斜体</i></blockquote>
-
-<h2 id="样式" class="md0-title-h2"><a href="#样式" class="md0-title-anchor">#</a><span class="md0-title-text">样式</span></h2>
-
-<div class="md0-paragraph">
-<b>加粗文字</b><b>加粗文字</b>
+<div id="css">
+    <div class="content">
+        <textarea class="editor"></textarea>
+    </div>
 </div>
+<div id="script">
+    <div class="content">
+        <textarea class="editor"></textarea>
+    </div>
+</div>
+<div id="markdown">
+    <div class="content">
+        <textarea class="editor"></textarea>
+    </div>
+</div>
+<div id="html">
+    <iframe class="content"></iframe>
+</div>
+<button id="btn-reload">更新</button>
+<script>
+var editors = {
+    css: CodeMirror.fromTextArea($('#css .editor').get(0), {
+        mode: 'text/css',
+        lineNumbers: true,
+        height: 'auto'
+    }),
+    script: CodeMirror.fromTextArea($('#script .editor').get(0), {
+        mode: 'text/javascript',
+        lineNumbers: true,
+        height: 'auto'
+    }),
+    markdown: CodeMirror.fromTextArea($('#markdown .editor').get(0), {
+        mode: 'text/markdown',
+        lineNumbers: true,
+        height: 'auto'
+    })
+};
 
-<div class="md0-paragraph">
-<b>加粗文字</b>
-</div>
+var loadCount = 0
 
-<div class="md0-paragraph">
-<i>斜体文字</i>
-</div>
+function loaded() {
+    if (++loadCount < 3) {
+        return
+    }
+    (new Function(editors.script.getValue()))()
+}
 
-<div class="md0-paragraph">
-<i>斜体文字</i>
-</div>
+function fromBase64(content) {
+    return decodeURIComponent(escape(atob(content.replace(/\n/g, ''))))
+}
 
-<div class="md0-paragraph">
-<i>斜体文字</i>
-</div>
+function cssCallback(response) {
+    editors.css.setValue(fromBase64(response.data.content));
+    loaded()
+}
 
-<div class="md0-paragraph">
-<b>在加粗文字中有<i>斜体</i></b>
-</div>
+function scriptCallback(response) {
+    editors.script.setValue(fromBase64(response.data.content));
+    loaded()
+}
 
-<div class="md0-paragraph">
-<span class="md0-strikethrough">带删除线的文字</span>
-</div>
-
-<div class="md0-paragraph">
-<span class="md0-strikethrough">带删除线的文字</span>
-</div>
-
-<div class="md0-paragraph">
-<u>下划线</u>
-</div>
-
-<div class="md0-paragraph">
-**不加粗**
-</div>
-
-<div class="md0-paragraph">
-*不斜体*
-</div>
-
-<div class="md0-paragraph">
-`不代码`
-</div>
-
-<hr class="md0-line" />
-
-<h2 id="代码" class="md0-title-h2"><a href="#代码" class="md0-title-anchor">#</a><span class="md0-title-text">代码</span></h2>
-
-<div class="md0-code-block" data-lang="javascript">
-<div class="md0-code-block-header"><span class="md0-code-block-lang">javascript</span></div>
-<div class="md0-code-block-body" style="overflow: auto; max-height: 400">
-<div class="md0-code-block-gutter">
-<span class="md0-code-block-rowindex">1</span>
-<span class="md0-code-block-rowindex">2</span>
-<span class="md0-code-block-rowindex">3</span>
-<span class="md0-code-block-rowindex">4</span>
-<span class="md0-code-block-rowindex">5</span>
-<span class="md0-code-block-rowindex">6</span>
-<span class="md0-code-block-rowindex">7</span>
-<span class="md0-code-block-rowindex">8</span>
-<span class="md0-code-block-rowindex">9</span>
-<span class="md0-code-block-rowindex">10</span>
-<span class="md0-code-block-rowindex">11</span>
-<span class="md0-code-block-rowindex">12</span>
-<span class="md0-code-block-rowindex">13</span>
-<span class="md0-code-block-rowindex">14</span>
-<span class="md0-code-block-rowindex">15</span>
-<span class="md0-code-block-rowindex">16</span>
-<span class="md0-code-block-rowindex">17</span>
-<span class="md0-code-block-rowindex">18</span>
-<span class="md0-code-block-rowindex">19</span>
-</div>
-<div class="md0-code-block-content">
-<div class="md0-code-block-line"><span class="md0-code-block-comment">//&nbsp;注释内容/span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">let</span>&nbsp;str&nbsp;=&nbsp;<span class="md0-code-block-text">'string&nbsp;let&nbsp;var&nbsp;const&nbsp;boolean'</span>&nbsp;<span class="md0-code-block-comment">//&nbsp;注释内容</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">let</span>&nbsp;i&nbsp;=&nbsp;<span class="md0-code-block-number">12</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">var</span>&nbsp;b&nbsp;=&nbsp;true</div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">const</span>&nbsp;arr&nbsp;=&nbsp;[{</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;a:&nbsp;<span class="md0-code-block-number">1</span>,</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;b:&nbsp;<span class="md0-code-block-number">2</span></div>
-<div class="md0-code-block-line">},&nbsp;{</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;a:&nbsp;<span class="md0-code-block-text">'foo'</span>,</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;b:&nbsp;<span class="md0-code-block-text">'bar'</span></div>
-<div class="md0-code-block-line">}]</div>
-<div class="md0-code-block-line"></div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">/*</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">&nbsp;*&nbsp;注释内容</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">&nbsp;*/</span></div>
-<div class="md0-code-block-line"></div>
-<div class="md0-code-block-line">(<span class="md0-code-block-keyword">async</span>&nbsp;()=&gt;{</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">await</span>&nbsp;ajax.get(<span class="md0-code-block-text">'/data.json'</span>)</div>
-<div class="md0-code-block-line">})</div>
-</div>
-</div>
-</div>
-
-<div class="md0-code-block" data-lang="c#">
-<div class="md0-code-block-header"><span class="md0-code-block-lang">c#</span></div>
-<div class="md0-code-block-body" style="overflow: auto; max-height: 400">
-<div class="md0-code-block-gutter">
-<span class="md0-code-block-rowindex">1</span>
-<span class="md0-code-block-rowindex">2</span>
-<span class="md0-code-block-rowindex">3</span>
-<span class="md0-code-block-rowindex">4</span>
-<span class="md0-code-block-rowindex">5</span>
-<span class="md0-code-block-rowindex">6</span>
-<span class="md0-code-block-rowindex">7</span>
-<span class="md0-code-block-rowindex">8</span>
-<span class="md0-code-block-rowindex">9</span>
-<span class="md0-code-block-rowindex">10</span>
-<span class="md0-code-block-rowindex">11</span>
-<span class="md0-code-block-rowindex">12</span>
-<span class="md0-code-block-rowindex">13</span>
-<span class="md0-code-block-rowindex">14</span>
-<span class="md0-code-block-rowindex">15</span>
-</div>
-<div class="md0-code-block-content">
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">using</span>&nbsp;System;</div>
-<div class="md0-code-block-line"></div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">namespace</span>&nbsp;Foo&nbsp;{</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">public</span>&nbsp;<span class="md0-code-block-keyword">class</span>&nbsp;Bar&nbsp;{</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-comment">///&nbsp;&lt;summary&gt;/span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-comment">///&nbsp;注释内容/span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-comment">///&nbsp;&lt;/summary&gt;/span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">public</span>&nbsp;<span class="md0-code-block-keyword">static</span>&nbsp;<span class="md0-code-block-keyword">int</span>&nbsp;Main(){</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-comment">//&nbsp;注释/span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">int</span>&nbsp;a&nbsp;=&nbsp;<span class="md0-code-block-number">10</span>;</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.WriteLine(a);</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">return</span>&nbsp;a;</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;}</div>
-<div class="md0-code-block-line">}</div>
-</div>
-</div>
-</div>
-<br/>
-<div class="md0-code-block" data-lang="python">
-<div class="md0-code-block-header"><span class="md0-code-block-lang">python</span></div>
-<div class="md0-code-block-body" style="overflow: auto; max-height: 400">
-<div class="md0-code-block-gutter">
-<span class="md0-code-block-rowindex">1</span>
-<span class="md0-code-block-rowindex">2</span>
-<span class="md0-code-block-rowindex">3</span>
-<span class="md0-code-block-rowindex">4</span>
-<span class="md0-code-block-rowindex">5</span>
-<span class="md0-code-block-rowindex">6</span>
-<span class="md0-code-block-rowindex">7</span>
-<span class="md0-code-block-rowindex">8</span>
-<span class="md0-code-block-rowindex">9</span>
-<span class="md0-code-block-rowindex">10</span>
-<span class="md0-code-block-rowindex">11</span>
-<span class="md0-code-block-rowindex">12</span>
-<span class="md0-code-block-rowindex">13</span>
-<span class="md0-code-block-rowindex">14</span>
-<span class="md0-code-block-rowindex">15</span>
-</div>
-<div class="md0-code-block-content">
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">from</span>&nbsp;app&nbsp;<span class="md0-code-block-keyword">import</span>&nbsp;logger</div>
-<div class="md0-code-block-line"></div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">#&nbsp;类文件/span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">class</span>&nbsp;Bar():</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-comment">#&nbsp;初始化/span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">def</span>&nbsp;__init__(<span class="md0-code-block-keyword">self</span>):</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-comment">#&nbsp;主方法/span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">def</span>&nbsp;main(<span class="md0-code-block-keyword">self</span>,&nbsp;v=<span class="md0-code-block-keyword">None</span>):</div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;多行注释</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-comment">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""</span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;=&nbsp;<span class="md0-code-block-number">10</span></div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(a)</div>
-<div class="md0-code-block-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="md0-code-block-keyword">return</span>&nbsp;a</div>
-</div>
-</div>
-</div>
-<hr class="md0-line" />
-
-<h2 id="列表内样式" class="md0-title-h2"><a href="#列表内样式" class="md0-title-anchor">#</a><span class="md0-title-text">列表内样式</span></h2>
-
-<ul class="md0-list">
-<li class="md0-list-item">列表项1 代码<div class="md0-code-block" data-lang="javascript">
-<div class="md0-code-block-header"><span class="md0-code-block-lang">javascript</span></div>
-<div class="md0-code-block-body" style="overflow: auto; max-height: 400">
-<div class="md0-code-block-gutter">
-<span class="md0-code-block-rowindex">1</span>
-<span class="md0-code-block-rowindex">2</span>
-</div>
-<div class="md0-code-block-content">
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">let</span>&nbsp;a&nbsp;=&nbsp;<span class="md0-code-block-number">0</span></div>
-<div class="md0-code-block-line"><span class="md0-code-block-keyword">var</span>&nbsp;b&nbsp;=&nbsp;<span class="md0-code-block-text">'function'</span></div>
-</div>
-</div>
-</div></li>
-<li class="md0-list-item">列表项2 引用<blockquote class="md0-quote"> 引用文字    引用文字</blockquote></li>
-<li class="md0-list-item">列表项3 表格<table class="md0-table">
-<thead><tr>
-<th class="md0-table-cell md-0-table-align-left">列1</th>
-<th class="md0-table-cell md-0-table-align-left">列2</th>
-<th class="md0-table-cell md-0-table-align-left">列3</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="md0-table-cell md-0-table-align-left">内容1</td>
-<td class="md0-table-cell md-0-table-align-left">内容2</td>
-<td class="md0-table-cell md-0-table-align-left">内容3</td>
-</tr>
-</tbody>
-</table></li>
-</ul>
-<hr class="md0-line" />
-
-<div class="md0-paragraph">
-<a href="" class="md0-link">超链接"</a>
-</div>
-
-<div class="md0-paragraph">
-<img src="img.gif" alt="图片" />
-</div>
-
-<h2 id="选中框" class="md0-title-h2"><a href="#选中框" class="md0-title-anchor">#</a><span class="md0-title-text">选中框</span></h2>
-
-<label class="md0-checkbox"><input type="checkbox" disabled="disabled" /> 未选中</label><label class="md0-checkbox md0-checkbox-checked"><input type="checkbox" disabled="disabled" checked="checked" /> 选中</label>
-
-<ul class="md0-list">
-<li class="md0-list-item"><label class="md0-checkbox md0-checkbox-checked"><input type="checkbox" disabled="disabled" checked="checked" /> @mentions, #refs, <a href="" class="md0-link">links"</a>, <b>formatting</b>, and <del>tags</del> supported</label></li>
-<li class="md0-list-item"><label class="md0-checkbox md0-checkbox-checked"><input type="checkbox" disabled="disabled" checked="checked" /> list syntax required (any unordered or ordered list supported)</label></li>
-<li class="md0-list-item"><label class="md0-checkbox md0-checkbox-checked"><input type="checkbox" disabled="disabled" checked="checked" /> this is a complete item</label></li>
-<li class="md0-list-item"><label class="md0-checkbox"><input type="checkbox" disabled="disabled" /> this is an incomplete item</label></li>
-</ul>
-<hr class="md0-line" />
-
-<h2 id="表格" class="md0-title-h2"><a href="#表格" class="md0-title-anchor">#</a><span class="md0-title-text">表格</span></h2>
-
-<table class="md0-table">
-<thead><tr>
-<th class="md0-table-cell md-0-table-align-left">表格</th>
-<th class="md0-table-cell md-0-table-align-center">此列居中对齐</th>
-<th class="md0-table-cell md-0-table-align-right">此列右对齐</th>
-</tr></thead>
-<tbody>
-<tr>
-<td class="md0-table-cell md-0-table-align-left">表格</td>
-<td class="md0-table-cell md-0-table-align-center"><a href="" class="md0-link">超链接"</a></td>
-<td class="md0-table-cell md-0-table-align-right"><img src="" alt="图片" /></td>
-</tr>
-<tr>
-<td class="md0-table-cell md-0-table-align-left"><i>斜体</i></td>
-<td class="md0-table-cell md-0-table-align-center"><i>斜体</i></td>
-<td class="md0-table-cell md-0-table-align-right">表格</td>
-</tr>
-<tr>
-<td class="md0-table-cell md-0-table-align-left"><b>粗体</b></td>
-<td class="md0-table-cell md-0-table-align-center"><span class="md0-strikethrough">粗体</span></td>
-<td class="md0-table-cell md-0-table-align-right">表格</td>
-</tr>
-<tr>
-<td class="md0-table-cell md-0-table-align-left">代码: <span class="md0-code-inline">let a = 'xxx'</span></td>
-<td class="md0-table-cell md-0-table-align-center">表格</td>
-<td class="md0-table-cell md-0-table-align-right">表格</td>
-</tr>
-<tr>
-<td class="md0-table-cell md-0-table-align-left">表格</td>
-<td class="md0-table-cell md-0-table-align-center">表格</td>
-<td class="md0-table-cell md-0-table-align-right">表格</td>
-</tr>
-</tbody>
-</table>
-
-</div>
+function mdCallback(response) {
+    editors.markdown.setValue(fromBase64(response.data.content));
+    loaded()
+}
+</script>
+<script src="https://api.github.com/repos/hyjiacan/md0/contents/src/md0.css?callback=cssCallback"
+        type="text/javascript"
+        charset="utf-8"></script>
+<script src="https://api.github.com/repos/hyjiacan/md0/contents/docs/parser.js?callback=scriptCallback"
+        type="text/javascript"
+        charset="utf-8"></script>
+<script src="https://api.github.com/repos/hyjiacan/md0/contents/docs/sample.md?callback=mdCallback"
+        type="text/javascript"
+        charset="utf-8"></script>
 </body>
-
 </html>

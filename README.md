@@ -43,6 +43,8 @@ console.log(html)
 </script>
 ```
 
+[Try it online](https://hyjiacan.github.io/md0/sample.html)
+
 ### Option
 
 |名字|类型|默认值|描述|
