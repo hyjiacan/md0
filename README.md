@@ -4,6 +4,8 @@
 
 ## 用法
 
+[Try it online](https://hyjiacan.github.io/md0/sample.html)
+
 ### NodeJS
 
 ```bash
@@ -42,8 +44,6 @@ var html = md0(markdown, option)
 console.log(html)
 </script>
 ```
-
-[Try it online](https://hyjiacan.github.io/md0/sample.html)
 
 ### Option
 

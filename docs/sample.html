@@ -10,7 +10,7 @@
     <script src="https://cdn.bootcss.com/codemirror/5.48.0/mode/javascript/javascript.min.js"></script>
     <script src="https://cdn.bootcss.com/codemirror/5.48.0/mode/css/css.min.js"></script>
     <script src="https://cdn.bootcss.com/codemirror/5.48.0/mode/markdown/markdown.min.js"></script>
-    <script src="https://raw.githubusercontent.com/hyjiacan/md0/master/src/md0.js"></script>
+    <script id="md0"></script>
     <style>
     html, body {
         height: 100%;
@@ -168,7 +168,14 @@ function mdCallback(response) {
     editors.markdown.setValue(fromBase64(response.data.content));
     loaded()
 }
+
+function md0Callback(response) {
+    $('#md0').html(fromBase64(response.data.content));
+}
 </script>
+<script src="https://api.github.com/repos/hyjiacan/md0/contents/src/md0.js?callback=md0Callback"
+        type="text/javascript"
+        charset="utf-8"></script>
 <script src="https://api.github.com/repos/hyjiacan/md0/contents/src/md0.css?callback=cssCallback"
         type="text/javascript"
         charset="utf-8"></script>

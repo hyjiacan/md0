@@ -191,7 +191,7 @@
                 })
                 // hyper link
                 .replace(/\[(.*?)\]\((.*?)\)/g, function (match, group1, group2) {
-                    return mergeString('<a href="', group2, '" class="md0-link">', group1, '"</a>')
+                    return mergeString('<a href="', group2, '" class="md0-link">', group1, '</a>')
                 })
                 // bold
                 .replace(/([_*]{2})(.+?)\1/g, function (match, group1, group2) {
