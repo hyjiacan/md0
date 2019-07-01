@@ -150,6 +150,10 @@ function loaded() {
     (new Function(editors.script.getValue()))()
 }
 
+$('#btn-reload').click(function () {
+    loaded();
+});
+
 function fromBase64(content) {
     return decodeURIComponent(escape(atob(content.replace(/\n/g, ''))))
 }
