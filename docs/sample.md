@@ -180,6 +180,23 @@ class Bar():
 |---|---|---|
 |-|-|-|
 &&&
+
+
+&&&theList
+- item1
+- item2
+  1. item3
+  2. item4
+&&&
+
+
+&&&theCode
+引用的内容部分
+这里面可以写表格
+|col1|col2|col3|
+|---|---|---|
+|-|-|-|
+&&&
 ```
 
 &&&theCode
@@ -192,4 +209,4 @@ class Bar():
 
 |col1|col2|col3|
 |---|---|---|
-|&theCode&|-|-|
+|&theCode&|&theList&|-|
