@@ -110,6 +110,10 @@
             return 'checked'
         }
 
+        if (/^&&&/.test(str)) {
+            return 'ref'
+        }
+
         if (!str) {
             return 'newline'
         }
@@ -124,6 +128,27 @@
         return rows.filter(function (row) {
             return !/^\s*$/.test(row)
         })
+    }
+
+    function setMergedOption(result, option, customize, property, defaultValue) {
+        if (customize.hasOwnProperty(property)) {
+            option[property] = customize[property]
+        } else {
+            option[property] = option.hasOwnProperty(property) ? option[property] : defaultValue
+        }
+    }
+
+    function getOption(option, customize) {
+        option = option || {}
+        customize = customize || {}
+        var result = {}
+
+        setMergedOption(result, option, customize, 'titleAnchor', true)
+        setMergedOption(result, option, customize, 'codeIndex', true)
+        setMergedOption(result, option, customize, 'codeHeader', true)
+        setMergedOption(result, option, customize, 'codeHeight', 0)
+        setMergedOption(result, option, customize, 'catalog', false)
+        return option
     }
 
     /**
@@ -247,8 +272,9 @@
             rows.pop()
 
             var html = [mergeString('<div class="md0-code-block" data-lang="', lang, '">')]
-
-            html.push(mergeString('<div class="md0-code-block-header"><span class="md0-code-block-lang">', lang, '</span></div>'))
+            if (option.codeHeader) {
+                html.push(mergeString('<div class="md0-code-block-header"><span class="md0-code-block-lang">', lang, '</span></div>'))
+            }
             var style = ''
             if (option.codeHeight) {
                 style = mergeString('overflow: auto; max-height: ', option.codeHeight)
@@ -516,6 +542,20 @@
         return [--index, temp]
     }
 
+    function getReferenceBlock(rows, index) {
+        var temp = []
+        var refName = rows[index].substring(3).replace(/\s+$/, '')
+        index++
+        for (; index < rows.length; index++) {
+            var row = rows[index]
+            if (getRowType(row) === 'ref') {
+                break
+            }
+            temp.push(row)
+        }
+        return [index, temp, refName]
+    }
+
     function fillCatalogItem(n) {
         var temp = []
         for (var i = 1; i < n; i++) {
@@ -524,61 +564,35 @@
         return mergeString('<span class="md0-catalog-dots">', temp.join(''), '</span>')
     }
 
-    /**
-     * Convert markdown content into html
-     * @param {string} markdownContent Markdown content
-     * @param {object} [option]
-     */
-    function render(markdownContent, option) {
-        /**
-         * 转义表
-         * @type {{}}
-         */
-        var escapeMap = {}
-        /**
-         * 目录
-         * @type {Array}
-         */
-        var catalog = []
-        var temp = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-        var rows = temp
-        // 处理转义
-            .replace(/\\(.)/g, function (match, ch) {
-                var code = ch.charCodeAt(0)
-                escapeMap[code] = ch
-                return mergeString('$ESCAPE', code, 'EPACSE$')
-            })
-            .split('\n')
-        var html = ['<div class="md0-container">']
-        option = option || {}
-        if (!option.hasOwnProperty('titleAnchor')) {
-            option.titleAnchor = true
-        }
-        if (!option.hasOwnProperty('codeIndex')) {
-            option.codeIndex = true
-        }
-        if (!option.hasOwnProperty('codeHeight')) {
-            option.codeHeight = 0
-        }
-        if (!option.hasOwnProperty('catalog')) {
-            option.catalog = false
-        }
-
+    function renderRows(rows, refMap, option, catalog) {
+        var html = []
         for (var i = 0; i < rows.length; i++) {
             var row = rows[i]
 
             var type = getRowType(row)
             var buffer
 
-            if (type === 'title') {
-                html.push(renders.title(row, option, catalog))
-                continue
-            }
-
             // code block
+            // 代码的优先级高干一切
             if (type === 'codeBlock') {
                 [i, buffer] = getCodeBlock(rows, i)
                 html.push(renders.codeBlock(buffer, option))
+                continue
+            }
+
+            if (type === 'ref') {
+                var refName
+                [i, buffer, refName] = getReferenceBlock(rows, i)
+                refMap[refName] = renderRows(buffer, refMap, getOption(option, {
+                    codeIndex: false,
+                    codeHeader: false,
+                    codeHeight: 0
+                }), catalog)
+                continue
+            }
+
+            if (type === 'title') {
+                html.push(renders.title(row, option, catalog))
                 continue
             }
 
@@ -621,6 +635,52 @@
                 html.push('</div>')
             }
         }
+        return html.join('\n')
+    }
+
+    /**
+     * Convert markdown content into html
+     * @param {string} markdownContent Markdown content
+     * @param {object} [option]
+     */
+    function render(markdownContent, option) {
+        /**
+         * 转义表
+         * @type {{}}
+         */
+        var escapeMap = {}
+        /**
+         * 引用表
+         * @type {{}}
+         */
+        var refMap = {}
+        /**
+         * 目录
+         * @type {Array}
+         */
+        var catalog = []
+        var temp = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+        var rows = temp
+        // 处理转义
+            .replace(/\\(.)/g, function (match, ch) {
+                var code = ch.charCodeAt(0)
+                escapeMap[code] = ch
+                return mergeString('$ESCAPE', code, 'EPACSE$')
+            })
+            // 处理引用
+            .replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
+                if (!name) {
+                    return match
+                }
+                return mergeString('$REF', name, 'FER$')
+            })
+            .split('\n')
+
+        var html = ['<div class="md0-container">']
+
+        option = getOption(option)
+
+        html.push(renderRows(rows, refMap, option, catalog))
         html.push('</div>')
         if (option.catalog) {
             html.unshift('<ul class="md0-catalog">\n' + catalog.map(function (h) {
@@ -628,7 +688,10 @@
             }).join('\n') + '</ul>\n')
         }
         return html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
-            return escapeMap[code]
+            var ch = escapeMap[code]
+            return ch === '\&' ? '&' : ch
+        }).replace(/\$REF(.+?)FER\$/g, function (match, name) {
+            return refMap[name] || mergeString('&', name, '&')
         })
     }
 

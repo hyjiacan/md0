@@ -49,13 +49,35 @@ console.log(html)
 
 |名字|类型|默认值|描述|
 |---|---|---|---|
+|codeHeader|Boolean|true|是否在代码块上面显示语言|
 |codeIndex|Boolean|true|是否在代码块前面显示行号|
 |codeHeight|Number|0|代码块的最大高度，为0表示不限制|
 |titleAnchor|Boolean|true|是否在标题前显示导航锚点|
 |catalog|Boolean|false|是否生成目录|
 
-### CLI
+### Feature
 
-```shell
-node parser.js README.md readme.html
+md0 添加有实用的`引用`功能，用于块或结构化内容的引用
+
+定义引用块`theCode`:
+
+```markdown
+&&&theCode
+引用的内容部分
+这里面可以写表格
+|col1|col2|col3|
+|---|---|---|
+|-|-|-|
+&&&
 ```
+
+> `theCode` 是引用的名称，引用名称仅支持 `[a-zA-Z_\-0-9]`
+
+引用 `theCode` 块:
+
+```markdown
+|col1|col2|col3|
+|---|---|---|
+|&theCode&|-|-|
+```
+使用 `&theCode&` 来将前面定义的引用块引用到表格内。

@@ -24,7 +24,7 @@ console.log(`Read template`)
 const template = `<html>
 <head>
   <meta charset="utf-8"/>
-  <link rel="stylesheet" href="./md0.css" />
+  <link rel="stylesheet" href="./src/md0.css" />
 </head>
 
 <body>
