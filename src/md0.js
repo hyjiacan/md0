@@ -360,7 +360,6 @@
         list: function (rows) {
             // remove empty rows
             rows = removeEmptyRows(rows)
-
             var firstItem = rows[0]
             var indent = firstItem.length - firstItem.replace(/^\s+/, '').length
             var reg = /^\s*[*-]\s/
@@ -394,8 +393,8 @@
                     }
                 }
                 indent = itemIndent
-                var t = getRowType(row)
                 row = row.replace(/^\s*(\*|-|[0-9]+\.?)\s/, '')
+                var t = getRowType(row)
                 // 是否是选择列表
                 if (t === 'check') {
                     row = row.replace(/^\[ \]/, '')
