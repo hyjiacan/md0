@@ -336,29 +336,41 @@
             rows = removeEmptyRows(rows)
 
             var firstItem = rows[0]
-            var indent = 0
-            var types = []
+            var indent = firstItem.length - firstItem.replace(/^\s+/, '').length
             var reg = /^\s*[*-]\s/
             var type = reg.test(firstItem) ? 'ul' : 'ol'
-            types.push(type)
+            var level = 0
+            var typeStack = []
+            var indentStack = []
 
-            var html = [mergeString('<', type, ' class="md0-list">')]
+            var html = [mergeString('<', type, ' class="md0-list md0-list-level-' + level + '">')]
 
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i]
-                var subType = reg.test(row) ? 'ul' : 'ol'
+                var subType = reg.test(firstItem) ? 'ul' : 'ol'
                 var itemIndent = row.length - row.replace(/^\s*/, '').length
                 if (itemIndent > indent) {
-                    // sub
-                    types.unshift(subType)
-                    html.push(mergeString('<', subType, ' class="md0-list">'))
+                    // 下级列表开始
+                    typeStack.push(subType)
+                    indentStack.push(itemIndent)
+                    html.push(mergeString('<', subType, ' class="md0-list md0-list-level-' + (++level) + '">'))
                 } else if (itemIndent < indent) {
-                    html.push(mergeString('</', types.shift(), '>'))
+                    // 下级列表结束
+                    while (true) {
+                        if (!indentStack.length) {
+                            break
+                        }
+                        if (indentStack[indentStack.length - 1] <= itemIndent) {
+                            break
+                        }
+                        indentStack.pop()
+                        html.push(mergeString('</', typeStack.pop(), '>'))
+                    }
                 }
                 indent = itemIndent
+                var t = getRowType(row)
                 row = row.replace(/^\s*(\*|-|[0-9]+\.?)\s/, '')
                 // 是否是选择列表
-                var t = getRowType(row)
                 if (t === 'check') {
                     row = row.replace(/^\[ \]/, '')
                     row = renders.check(renders.common(row))
@@ -371,7 +383,7 @@
                 html.push(mergeString('<li class="md0-list-item">', row, '</li>'))
             }
 
-            html.push(mergeString('</', types[0], '>'))
+            html.push(mergeString('</', type, '>'))
             return html.join('\n')
         },
         quote: function (rows) {
