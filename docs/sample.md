@@ -173,7 +173,7 @@ class Bar():
 ## 引用
 
 ```markdown
-&&&theCode
+&&&theTable
 引用的内容部分
 这里面可以写表格
 |col1|col2|col3|
@@ -188,15 +188,6 @@ class Bar():
   1. item3
   2. item4
 &&&
-
-
-&&&theCode
-引用的内容部分
-这里面可以写表格
-|col1|col2|col3|
-|---|---|---|
-|-|-|-|
-&&&
 ```
 
 &&&theCode
@@ -207,6 +198,24 @@ class Bar():
 |-|-|-|
 &&&
 
+&&&theList
+- item1
+- item2
+  1. item3
+  2. item4
+&&&
+
+&&&theCode
+```javascript
+$.get('/path/to/url', {
+  id: 0,
+  keyword: 'md0',
+}, function(response) {
+  //
+}
+```
+&&&
+
 |col1|col2|col3|
 |---|---|---|
-|&theCode&|&theList&|-|
+|&theTable&|&theList&|&theCode&|
