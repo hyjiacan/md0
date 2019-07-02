@@ -190,7 +190,7 @@ class Bar():
 &&&
 ```
 
-&&&theCode
+&&&theTable
 引用的内容部分
 这里面可以写表格
 |col1|col2|col3|
