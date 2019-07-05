@@ -2,6 +2,8 @@
 
 这是一个简陋的 markdown 文档处理器
 
+> 最近很忙，没时间整理代码，代码凌乱，各位将就一下吧，忙过这段了再整理
+
 ## 用法
 
 [Try it online](https://hyjiacan.github.io/md0/sample.html)
