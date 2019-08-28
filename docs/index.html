@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>md0 一个丑陋的markdown解析工具</title>
-    <script src="https://cdn.bootcss.com/Base64/1.0.2/base64.min.js"></script>
-    <style id="style"></style>
-    <script id="script"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/Base64/1.0.2/base64.min.js"></script>
+    <style type="text/css" id="style"></style>
+    <script type="text/javascript" id="script"></script>
     <style>
     #content:empty {
         content: 'Loading...';
@@ -19,6 +19,7 @@
 <body>
 <div id="content"></div>
 <script>
+var markdownContent
 function fromBase64(content) {
     return decodeURIComponent(escape(atob(content.replace(/\n/g, ''))))
 }
@@ -29,11 +30,11 @@ function loaded() {
     if (++loadCount < 3) {
         return
     }
-    document.querySelector('#content').innerHTML = md0(document.querySelector('#content').innerHTML)
+    document.querySelector('#content').innerHTML = md0(markdownContent)
 }
 
 function mdCallback(response) {
-    document.querySelector('#content').innerHTML = fromBase64(response.data.content)
+    markdownContent = fromBase64(response.data.content)
     loaded()
 }
 

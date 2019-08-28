@@ -228,7 +228,7 @@
                 })
                 // inline code
                 .replace(/(`)(.+?)\1/g, function (match, group1, group2) {
-                    return mergeString('<span class="md0-code-inline">', group2, '</span>')
+                    return mergeString('<span class="md0-code-inline">', group2.replace(/</g, '&lt;').replace(/>/g, '&gt;'), '</span>')
                 })
                 // Strikethrough
                 .replace(/([-~]{2})(.+?)\1/g, function (match, group1, group2) {
