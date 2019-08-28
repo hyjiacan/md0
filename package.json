@@ -4,7 +4,7 @@
   "description": "An ugly lib to make markdown into html",
   "main": "src/md0.js",
   "scripts": {
-    "start": "node parser.js docs/sample.md docs/sample.html"
+    "start": "node parser.js"
   },
   "repository": {
     "type": "git",
