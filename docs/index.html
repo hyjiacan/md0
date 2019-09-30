@@ -36,16 +36,6 @@ function loaded() {
     document.querySelector('#content').innerHTML = md0(markdownContent, {
         useHljs: true
     })
-    hljs.initHighlightingOnLoad()
-    var codes = document.querySelectorAll('pre>code');
-    codes.forEach(function (code) {
-        var html = code.innerHTML;
-        var lines = html.split(/\n/g);
-        // 移除多余的行
-        lines.shift();
-        lines.pop();
-        code.innerHTML = '<div class="md0-code-block-line">' + lines.join('</div><div class="md0-code-block-line">') + '</div>'
-    });
 }
 
 function mdCallback(response) {

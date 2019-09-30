@@ -6,20 +6,8 @@
     <script src="https://cdn.bootcss.com/highlight.js/9.15.10/highlight.min.js"></script>
     <link href="https://cdn.bootcss.com/highlight.js/9.15.10/styles/default.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./src/md0.css"/>
-    <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 {content}
-<script>
-var codes = document.querySelectorAll('pre>code');
-codes.forEach(function (code) {
-    var html = code.innerHTML;
-    var lines = html.split(/\n/g);
-    // 移除多余的行
-    lines.shift();
-    lines.pop();
-    code.innerHTML = '<div class="md0-code-block-line">' + lines.join('</div><div class="md0-code-block-line">') + '</div>'
-});
-</script>
 </body>
 </html>

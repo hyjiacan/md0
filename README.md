@@ -28,6 +28,8 @@ var html = md0(markdown, option)
 console.log(html)
 ```
 
+> 详细参见 [parser.js](./parser.js)
+
 ### Browser
 
 ```html
@@ -92,24 +94,8 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 ```html
 <script src="/path/to/highlight.min.js"></script>
 <link href="/path/to/styles/default.min.css" rel="stylesheet">
-<script>
-    // 记得调用这一句初始化渲染
-    hljs.initHighlightingOnLoad();
-</script>
 ```
 
-此时，`md0.css` 需要在 `highlight.js` 的样式后引入，并在渲染完成后添加以下代码，以使其适应主题:
-
-```javascript
-var codes = document.querySelectorAll('pre>code');
-codes.forEach(function (code) {
-    var html = code.innerHTML;
-    var lines = html.split(/\n/g);
-    // 移除多余的行
-    lines.shift();
-    lines.pop();
-    code.innerHTML = '<div class="md0-code-block-line">' + lines.join('</div><div class="md0-code-block-line">') + '</div>'
-});
-```
+此时，`md0.css` 需要在 `highlight.js` 的样式后引入，以使其适应主题
 
 代码高亮配置参考: [https://github.com/highlightjs/highlight.js](https://github.com/highlightjs/highlight.js)

@@ -541,8 +541,7 @@
          * @type {Array}
          */
         var catalog = []
-        var temp = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-        var rows = temp
+        var rows = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
         // 处理转义
             .replace(/\\(.)/g, function (match, ch) {
                 var code = ch.charCodeAt(0)
@@ -569,12 +568,27 @@
                 return mergeString('<li><a href="#', h.text, '">', fillCatalogItem(h.level), '# ', h.text, '</a></li>')
             }).join('\n') + '</ul>\n')
         }
-        return html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
+        var temp = html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
             var ch = escapeMap[code]
             return ch === '\&' ? '&' : ch
         }).replace(/\$REF(.+?)FER\$/g, function (match, name) {
             return refMap[name] || mergeString('&', name, '&')
         })
+        if (!option.useHljs) {
+            return temp
+        }
+        // 用于处理 highlight.js 渲染后的代码行
+        var hljsFixCode = ['<script>',
+            'if(hljs)hljs.initHighlightingOnLoad();',
+            'var codes = document.querySelectorAll(\'pre>code\');',
+            'codes.forEach(function (codeBlock) {',
+            'var content = codeBlock.innerHTML;',
+            'var lines = content.split(/\\n/g);',
+            'lines.shift();',
+            'lines.pop();',
+            'codeBlock.innerHTML = \'<div class="md0-code-block-line">\' + lines.join(\'</div><div class="md0-code-block-line">\') + \'</div>\';',
+            '});', '</script>']
+        return temp + '\n' + hljsFixCode.join('')
     }
 
     return render
