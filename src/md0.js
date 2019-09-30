@@ -578,7 +578,7 @@
             return temp
         }
         // 用于处理 highlight.js 渲染后的代码行
-        var hljsFixCode = ['<script>',
+        var hljsFixCode = ['<' + 'script>',
             'if(hljs)hljs.initHighlightingOnLoad();',
             'var codes = document.querySelectorAll(\'pre>code\');',
             'codes.forEach(function (codeBlock) {',
@@ -587,7 +587,7 @@
             'lines.shift();',
             'lines.pop();',
             'codeBlock.innerHTML = \'<div class="md0-code-block-line">\' + lines.join(\'</div><div class="md0-code-block-line">\') + \'</div>\';',
-            '});', '</script>']
+            '});', '</' + 'script>']
         return temp + '\n' + hljsFixCode.join('')
     }
 
