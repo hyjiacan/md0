@@ -16,6 +16,15 @@
         text-align: center;
         display: block;
     }
+
+    @media screen and (min-width: 1280px) {
+        .md0-catalog {
+            position: fixed;
+            left: 15px;
+            top: 15px;
+            width: 200px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -34,6 +43,7 @@ function loaded() {
         return
     }
     document.querySelector('#content').innerHTML = md0(markdownContent, {
+        catalog: true,
         useHljs: true
     })
 }
