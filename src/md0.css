@@ -109,6 +109,11 @@
     font-weight: 600;
 }
 
+.md0-code-body:after {
+    content: ' ';
+    clear: both;
+}
+
 .md0-code-block-gutter {
     width: 60px;
     background-color: rgb(241, 241, 241);

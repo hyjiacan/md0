@@ -577,9 +577,9 @@
         if (!option.useHljs) {
             return temp
         }
-        // 用于处理 highlight.js 渲染后的代码行
+        // 处理 highlight.js 渲染后的代码行
         var hljsFixCode = ['<' + 'script>',
-            'if(hljs)hljs.initHighlighting();',
+            'hljs.initHighlighting();',
             'var codes = document.querySelectorAll(\'pre>code\');',
             'codes.forEach(function (codeBlock) {',
             'var content = codeBlock.innerHTML;',
