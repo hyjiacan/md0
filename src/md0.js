@@ -114,6 +114,11 @@
                     return mergeString('<img src="', group2, '" alt="', group1, '" />')
                 })
                 // hyper link
+                // 处理未使用 []() 格式的超链接为 []() 格式
+                .replace(/([^[('"])((ftp|https?):\/\/[a-z0-9-_%/\\?&.!@#$()[\]|,<>{}]+)/ig, function (match, group1, group2, group3) {
+                    return mergeString(group1, '[', group2, '](', group2, ')')
+                })
+                // hyper link
                 .replace(/\[(.*?)\]\((.*?)\)/g, function (match, group1, group2) {
                     return mergeString('<a href="', group2, '" class="md0-link">', group1, '</a>')
                 })
@@ -151,7 +156,7 @@
                 level: level,
                 text: pureText
             })
-            var anchor = option.titleAnchor ? mergeString('<a href="#', pureText, '" class="md0-title-anchor">#</a>') : ''
+            var anchor = option.titleAnchor ? mergeString('<a href="#', pureText, '" class="md0-title-anchor"></a>') : ''
             return mergeString('<', tag, ' id="', pureText, '" class="md0-title-', tag, '">', anchor,
                 '<span class="md0-title-text">', text.replace(/^\s+/, ''), '</span></', tag, '>')
         },

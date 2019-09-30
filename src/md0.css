@@ -224,6 +224,10 @@
     padding-top: 0.1em;
 }
 
+.md0-title-anchor:after {
+    content: '#';
+}
+
 .md0-title-text {
     vertical-align: middle;
 }

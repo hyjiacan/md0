@@ -4,6 +4,11 @@
 
 > 最近很忙，没时间整理代码，代码凌乱，各位将就一下吧，忙过这段了再整理
 
+## 代码
+
+- Gitee: https://gitee.com/hyjiacan/md0
+- Github: https://github.com/hyjiacan/md0
+
 ## Usage
 
 [Try it online](https://hyjiacan.github.io/md0/sample.html)
@@ -28,7 +33,7 @@ var html = md0(markdown, option)
 console.log(html)
 ```
 
-> 详细参见 [parser.js](./parser.js)
+> 详细用法见项目根目录文件 *./parser.js*
 
 ### Browser
 
@@ -49,7 +54,7 @@ console.log(html)
 </script>
 ```
 
-### Option
+## Option
 
 |名字|类型|默认值|描述|
 |---|---|---|---|
@@ -60,7 +65,7 @@ console.log(html)
 |catalog|Boolean|false|是否生成目录|
 |useHljs|Boolean|false|是否使用`highlight.js`高亮代码|
 
-### Feature
+## Feature
 
 md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 
@@ -98,4 +103,4 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 
 此时，`md0.css` 需要在 `highlight.js` 的样式后引入，以使其适应主题
 
-代码高亮配置参考: [https://github.com/highlightjs/highlight.js](https://github.com/highlightjs/highlight.js)
+代码高亮配置参考: https://github.com/highlightjs/highlight.js
