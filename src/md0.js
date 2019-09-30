@@ -1,11 +1,11 @@
 (function (global, factory) {
     if (typeof module === "object" && typeof module.exports === "object") {
-        module.exports = factory()
+        module.exports = factory(false)
     } else {
-        global.md0 = factory()
+        global.md0 = factory(true)
     }
 // Pass this if window is not defined yet
-})(typeof window !== "undefined" ? window : this, function () {
+})(typeof window !== "undefined" ? window : this, function (isBrowser) {
     function mergeString() {
         return [].slice.apply(arguments).join('')
     }
@@ -520,6 +520,18 @@
         return html.join('\n')
     }
 
+    function processCodeBlock() {
+        if (hljs) hljs.initHighlighting();
+        var codes = document.querySelectorAll('pre>code');
+        codes.forEach(function (codeBlock) {
+            var content = codeBlock.innerHTML;
+            var lines = content.split(/\n/g);
+            lines.shift();
+            lines.pop();
+            codeBlock.innerHTML = '<div class="md0-code-block-line">' + lines.join('</div><div class="md0-code-block-line">') + '</div>';
+        });
+    }
+
     /**
      * Convert markdown content into html
      * @param {string} markdownContent Markdown content
@@ -578,17 +590,16 @@
             return temp
         }
         // 处理 highlight.js 渲染后的代码行
-        var hljsFixCode = ['<' + 'script>',
-            'hljs.initHighlighting();',
-            'var codes = document.querySelectorAll(\'pre>code\');',
-            'codes.forEach(function (codeBlock) {',
-            'var content = codeBlock.innerHTML;',
-            'var lines = content.split(/\\n/g);',
-            'lines.shift();',
-            'lines.pop();',
-            'codeBlock.innerHTML = \'<div class="md0-code-block-line">\' + lines.join(\'</div><div class="md0-code-block-line">\') + \'</div>\';',
-            '});', '</' + 'script>']
-        return temp + '\n' + hljsFixCode.join('')
+        if (!isBrowser) {
+            // node 环境
+            return temp + ['<' + 'script>', processCodeBlock.toString(), 'processCodeBlock();</' + 'script>'].join('')
+        }
+        // 浏览器环境
+        // 等待DOM渲染完成再调用
+        setTimeout(function () {
+            processCodeBlock()
+        }, 100)
+        return temp
     }
 
     return render
