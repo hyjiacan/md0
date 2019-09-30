@@ -5,7 +5,8 @@ var html = md0(markdown, {
     catalog: true,
     codeHeight: 0,
     codeIndex: true,
-    titleAnchor: true
+    titleAnchor: true,
+    useHljs: false
 })
 
 var win = $('iframe')[0].contentWindow

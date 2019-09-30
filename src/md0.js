@@ -6,66 +6,6 @@
     }
 // Pass this if window is not defined yet
 })(typeof window !== "undefined" ? window : this, function () {
-    var KEYWORDS = {
-        _: [
-            'return', 'try', 'catch', 'finally', 'for', 'while'
-        ],
-        js: [
-            'true', 'false', 'null', 'function', 'new', 'return',
-            'case', 'switch', 'if', 'else', 'var', 'let', 'const',
-            'async', 'await', 'with', 'typeof', 'class', 'from',
-            'import', 'throw', 'this', 'in', 'of'
-        ],
-        python: [
-            'True', 'False', 'None', 'if', 'else', 'elif',
-            'with', 'as', 'def', 'class', 'from', 'import',
-            'raise', 'self', 'in', 'of', 'from', 'keyword'
-        ],
-        bash: [
-            'true', 'false', 'null', 'function', 'new', 'xcopy',
-            'case', 'esac', 'if', 'else', 'elif', 'fi', 'cp',
-            'mv', 'rm', 'ln', 'link', 'source'
-        ],
-        java: [
-            'true', 'false', 'null', 'new', 'import', 'interface',
-            'case', 'switch', 'if', 'else', 'var', 'static', 'const',
-            'readonly', 'final', 'class', 'abstract', 'virtual',
-            'package', 'implements', 'extends', 'throws', 'String',
-            'Boolean', 'float', 'double', 'long', 'int', 'public',
-            'Integer', 'private', 'protected', 'synchronized', 'in',
-            'of'
-        ],
-        csharp: [
-            'true', 'false', 'null', 'new', 'using', 'namespace',
-            'case', 'switch', 'if', 'else', 'var', 'static', 'const',
-            'readonly', 'seal', 'class', 'async', 'await', 'struct',
-            'package', 'throw', 'override', 'String', 'string', 'get',
-            'bool', 'float', 'double', 'long', 'int', 'public', 'set',
-            'Integer', 'Boolean', 'private', 'protected', 'internal',
-            'out', 'ref', 'in', 'of', 'as', 'partial', 'interface',
-            'abstract', 'virtual', 'from', 'select', 'join', 'where'
-        ],
-        cpp: [
-            'true', 'false', 'null', 'TRUE', 'FALSE', 'NULL', 'new',
-            'case', 'switch', 'if', 'else', 'const', '#define',
-            'try', 'catch', 'finally', 'None', 'string', 'int', 'bool',
-            'bool', 'float', 'double', 'long', 'struct', 'operator'
-        ]
-    }
-
-    function getKeywords(lang) {
-        if (['javascript', 'js', 'es6', 'ecmascript'].indexOf(lang) !== -1) {
-            lang = 'js'
-        } else if (['shell', 'bat', 'bash', 'ecmascript'].indexOf(lang) !== -1) {
-            lang = 'bash'
-        } else if (['c#', 'csharp'].indexOf(lang) !== -1) {
-            lang = 'csharp'
-        } else if (['c++', 'c', 'cpp', 'cxx'].indexOf(lang) !== -1) {
-            lang = 'cpp'
-        }
-        return [].concat(KEYWORDS._, KEYWORDS[lang] || [])
-    }
-
     function mergeString() {
         return [].slice.apply(arguments).join('')
     }
@@ -148,62 +88,21 @@
         setMergedOption(result, option, customize, 'codeHeader', true)
         setMergedOption(result, option, customize, 'codeHeight', 0)
         setMergedOption(result, option, customize, 'catalog', false)
+        setMergedOption(result, option, customize, 'useHljs', false)
         return option
     }
 
     /**
-     * 高亮代码
+     * 处理行的特殊字符
      * @param row
-     * @param lang
-     * @return {string}
+     * @param indent
      */
-    function codeHighlight(row, lang) {
-        // 注释行
-        if (/^(&nbsp;)*(\/\/|#|--)/.test(row)) {
-            // ignore line comment row
-            return row.replace(/(\/\/|#|--).*/, function (match) {
-                return mergeString('<span class="md0-code-block-comment">', match, '/span>')
-            })
-        }
-        // 行内注释
-        var temp = /^(.*?)(\/\/|#|--)(.*)$/.exec(row)
-        var tag = ''
-        var comment = ''
-        if (temp) {
-            [, row, tag, comment] = temp
-        }
-        var buffer = {}
-        var i = 0
-        var keywords = getKeywords(lang)
-        var tpl = row
-        // string
-            .replace(/(['"])(.+?)\1/g, function (match, group1, group2) {
-                var key = mergeString('@', i++, '@')
-                buffer[key] = mergeString('<span class="md0-code-block-text">', group1, group2, group1, '</span>')
-                return key
-            })
-            // numeric
-            .replace(/(&nbsp;)(\d+)([^'"])?/g, function (match, group1, group2, group3) {
-                var key = mergeString('@', i++, '@')
-                buffer[key] = mergeString(group1 || '', '<span class="md0-code-block-number">', group2, '</span>', group3 || '')
-                return key
-            })
-            // keyword
-            .replace(new RegExp(mergeString('(^|[^a-zA-Z0-9_$])(', keywords.join('|'), ')([^a-zA-Z0-9_$])'), 'g'),
-                function (match, group1, group2, group3) {
-                    var key = mergeString('@', i++, '@')
-                    buffer[key] = mergeString(group1, '<span class="md0-code-block-keyword">', group2, '</span>', group3)
-                    return key
-                })
-            // inline comment
-            .replace(/(\/\/|#).+$/, function (match) {
-                var key = mergeString('@', i++, '@')
-                buffer[key] = mergeString('<span class="md0-code-block-comment">', match, '</span>')
-                return key
-            })
-        return tpl.replace(/@\d+@/g, function (match) {
-            return buffer[match]
-        }) + (tag ? mergeString('<span class="md0-code-block-comment">', tag, comment, '</span>') : '')
+    function rowFilter(row, indent) {
+        return row.substring(indent ? indent.length : 0)
+            .replace(/\t/g, '    ')
+            .replace(/ /g, '&nbsp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
     }
 
     var renders = {
@@ -277,7 +176,7 @@
             }
             var style = ''
             if (option.codeHeight) {
-                style = mergeString('overflow: auto; max-height: ', option.codeHeight)
+                style = mergeString('overflow: auto; max-height: ', option.codeHeight, 'px')
             }
             html.push(mergeString('<div class="md0-code-block-body" style="', style, '">'))
             // 行号
@@ -288,37 +187,21 @@
                 })
                 html.push('</div>')
             }
-            html.push('<div class="md0-code-block-content">')
-            var blockCommentFounded = false
-            rows.forEach(function (str) {
-                var temp = str
-                // 移除多余的缩进
-                    .substring(indent.length)
-                    .replace(/\t/g, '    ')
-                    .replace(/ /g, '&nbsp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                // block comment
-                if (!blockCommentFounded) {
-                    // 找到开始处
-                    if (str.indexOf('/*') !== -1 || str.indexOf('"""') !== -1) {
-                        blockCommentFounded = true
-                        temp = mergeString('<span class="md0-code-block-comment">', temp, '</span>')
-                    } else {
-                        // highlight
-                        temp = codeHighlight(temp, lang)
-                    }
-                } else if (str.indexOf('*/') !== -1 || str.indexOf('"""') !== -1) {
-                    // 找到结束处
-                    blockCommentFounded = false
-                    temp = mergeString('<span class="md0-code-block-comment">', temp, '</span>')
-                } else {
-                    // 注释中内容
-                    temp = mergeString('<span class="md0-code-block-comment">', temp, '</span>')
-                }
-                html.push(mergeString('<div class="md0-code-block-line">', temp, '</div>'))
-            })
-            html.push('</div>')
+            if (option.useHljs) {
+                html.push(mergeString('<pre class="md0-code-block-content" style="', style, '"><code class="' + lang + '">'))
+
+                rows.forEach(function (str) {
+                    // 移除多余的缩进
+                    html.push(rowFilter(str, indent))
+                })
+                html.push('</code></pre>')
+            } else {
+                html.push('<div class="md0-code-block-content">')
+                rows.forEach(function (str) {
+                    html.push(mergeString('<div class="md0-code-block-line">', rowFilter(str, indent), '</div>'))
+                })
+                html.push('</div>')
+            }
             html.push('</div>')
             html.push('</div>')
             return html.join('\n')
