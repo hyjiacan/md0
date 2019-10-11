@@ -109,13 +109,18 @@
         common: function (str) {
             var buffer = {}
             var tpl = str
-            // image
+                // image
                 .replace(/!\[(.+?)\]\((.*?)\)/g, function (match, group1, group2) {
                     return mergeString('<img src="', group2, '" alt="', group1, '" />')
                 })
                 // hyper link
                 // 处理未使用 []() 格式的超链接为 []() 格式
-                .replace(/([^[('"])((ftp|https?):\/\/[a-z0-9-_%/\\?&.!@#$()[\]|,<>{}]+)/ig, function (match, group1, group2, group3) {
+                .replace(/^((ftp|https?):\/\/[a-z0-9\-_%/\\?&.!@#$()\[\]|,<>{}:]+)/ig, function (match, group1, group2) {
+                    return mergeString('[', group1, '](', group1, ')<br/>')
+                })
+                // hyper link
+                // 处理未使用 []() 格式的超链接为 []() 格式
+                .replace(/([^[('"])((ftp|https?):\/\/[a-z0-9\-_%/\\?&.!@#$()\[\]|,<>{}:]+)/ig, function (match, group1, group2, group3) {
                     return mergeString(group1, '[', group2, '](', group2, ')')
                 })
                 // hyper link
@@ -559,7 +564,7 @@
          */
         var catalog = []
         var rows = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
-        // 处理转义
+            // 处理转义
             .replace(/\\(.)/g, function (match, ch) {
                 var code = ch.charCodeAt(0)
                 escapeMap[code] = ch
