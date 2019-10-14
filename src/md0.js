@@ -96,13 +96,14 @@
      * 处理行的特殊字符
      * @param row
      * @param indent
+     * @param space 是否处理空格
      */
-    function rowFilter(row, indent) {
-        return row.substring(indent ? indent.length : 0)
+    function rowFilter(row, indent, space) {
+        var temp = row.substring(indent ? indent.length : 0)
             .replace(/\t/g, '    ')
-            .replace(/ /g, '&nbsp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
+        return space ? temp.replace(/ /g, '&nbsp;') : temp
     }
 
     var renders = {
@@ -208,7 +209,7 @@
             } else {
                 html.push('<div class="md0-code-block-content">')
                 rows.forEach(function (str) {
-                    html.push(mergeString('<div class="md0-code-block-line">', rowFilter(str, indent), '</div>'))
+                    html.push(mergeString('<div class="md0-code-block-line">', rowFilter(str, indent, false), '</div>'))
                 })
                 html.push('</div>')
             }
