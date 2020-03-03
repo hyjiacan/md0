@@ -1,2 +1,4 @@
 /.idea
 /*.html
+/node_modules
+/dist

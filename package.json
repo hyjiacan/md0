@@ -2,9 +2,12 @@
   "name": "md0",
   "version": "0.4.0",
   "description": "An ugly lib to make markdown into html",
-  "main": "src/md0.js",
+  "main": "dist/md0.js",
+  "types": "types/index.d.ts",
   "scripts": {
-    "start": "node parser.js"
+    "start": "npx webpack-dev-server --mode=development",
+    "build": "npx webpack --mode=production",
+    "build:docs": "npx webpack --mode=production ./demo/index.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +26,17 @@
   "bugs": {
     "url": "https://github.com/hyjiacan/md0/issues"
   },
-  "homepage": "https://hyjiacan.github.io/md0/"
+  "homepage": "https://hyjiacan.github.io/md0/",
+  "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.4.2",
+    "eslint": "^6.8.0",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.11.1",
+    "less-loader": "^5.0.0",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  }
 }

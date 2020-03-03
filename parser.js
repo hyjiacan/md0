@@ -1,5 +1,5 @@
 var fs = require('fs')
-var md0 = require('./src/md0')
+var md0 = require('./dist/md0')
 
 var args = process.argv.splice(2)
 
