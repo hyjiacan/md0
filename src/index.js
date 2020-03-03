@@ -1,16 +1,17 @@
 import {getOption, getRowType, mergeString} from './util'
-import renders from './renders'
-import {
-  getCodeBlock,
-  getEmptyBlock,
-  getListBlock,
-  getParagraphBlock,
-  getQuoteBlock,
-  getReferenceBlock,
-  getTableBlock
-} from './block-getter'
+
+import reference from './renders/reference'
+import title from './renders/title'
+import codeblock from './renders/codeblock'
+import list from './renders/list'
+import blockquote from './renders/blockquote'
+import table from './renders/table'
+import newline from './renders/newline'
+import empty from './renders/empty'
+import paragraph from './renders/paragraph'
 
 import './md0.less'
+import catalog from './renders/catalog'
 
 function renderRows (rows, refMap, option, catalog) {
   const html = []
@@ -22,15 +23,15 @@ function renderRows (rows, refMap, option, catalog) {
 
     // code block
     // 代码的优先级高干一切
-    if (type === 'codeBlock') {
-      [i, buffer] = getCodeBlock(rows, i)
-      html.push(renders.codeBlock(buffer, option))
+    if (type === 'codeblock') {
+      [i, buffer] = codeblock.get(rows, i)
+      html.push(codeblock.render(buffer, option))
       continue
     }
 
     if (type === 'ref') {
       let refName
-      [i, buffer, refName] = getReferenceBlock(rows, i)
+      [i, buffer, refName] = reference.get(rows, i)
       refMap[refName] = renderRows(buffer, refMap, getOption(option, {
         codeIndex: false,
         codeHeader: false,
@@ -40,34 +41,34 @@ function renderRows (rows, refMap, option, catalog) {
     }
 
     if (type === 'title') {
-      html.push(renders.title(row, option, catalog))
+      html.push(title.render(row, option, catalog))
       continue
     }
 
     // list
     if (type === 'list') {
-      [i, buffer] = getListBlock(rows, i, option)
-      html.push(renders.list(buffer))
+      [i, buffer] = list.get(rows, i, option)
+      html.push(list.render(buffer))
       continue
     }
 
-    // quote
-    if (type === 'quote') {
-      [i, buffer] = getQuoteBlock(rows, i)
-      html.push(renders.quote(buffer))
+    // blockquote
+    if (type === 'blockquote') {
+      [i, buffer] = blockquote.get(rows, i)
+      html.push(blockquote.render(buffer))
       continue
     }
 
     // table
     if (type === 'table') {
-      [i, buffer] = getTableBlock(rows, i)
-      html.push(renders.table(buffer))
+      [i, buffer] = table.get(rows, i)
+      html.push(table.render(buffer))
       continue
     }
 
     if (type === 'newline') {
-      [i, buffer] = getEmptyBlock(rows, i)
-      html.push(renders.newline(buffer))
+      [i, buffer] = empty.get(rows, i)
+      html.push(newline.render(buffer))
       continue
     }
 
@@ -77,7 +78,7 @@ function renderRows (rows, refMap, option, catalog) {
     } else {
       // console.log(i, 'render', type)
     }
-    [i, buffer] = getParagraphBlock(rows, i, option)
+    [i, buffer] = paragraph.get(rows, i, option)
     html.push(buffer.join(''))
     if (type === 'common') {
       html.push('</div>')
@@ -119,7 +120,7 @@ function render (markdownContent, option) {
    * 目录
    * @type {Array}
    */
-  const catalog = []
+  const catalogData = []
   const rows = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
     // 处理转义
     .replace(/\\(.)/g, function (match, ch) {
@@ -140,11 +141,11 @@ function render (markdownContent, option) {
 
   option = getOption(option)
 
-  html.push(renderRows(rows, refMap, option, catalog))
+  html.push(renderRows(rows, refMap, option, catalogData))
   html.push('</div>')
   if (option.catalog) {
-    html.unshift('<ul class="md0-catalog">\n' + catalog.map(function (h) {
-      return mergeString('<li><a href="#', h.text, '">', renders.fillCatalogItem(h.level), '# ', h.text, '</a></li>')
+    html.unshift('<ul class="md0-catalog">\n' + catalogData.map(function (h) {
+      return mergeString('<li><a href="#', h.text, '">', catalog.fillDots(h.level), '# ', h.text, '</a></li>')
     }).join('\n') + '</ul>\n')
   }
   const temp = html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {

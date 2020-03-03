@@ -4,8 +4,6 @@ const xhr = require('./xhr')
 
 __webpack_public_path__ = path.resolve(__dirname, 'demo')
 
-console.info(__webpack_public_path__)
-
 const md0 = require('../src/index').default
 
 const {data} = xhr.getSync('/sample.md')

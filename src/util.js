@@ -11,7 +11,7 @@ export function getRowType (str) {
   str = str.replace(/^\s*/g, '')
 
   if (/^\s*```/.test(str)) {
-    return 'codeBlock'
+    return 'codeblock'
   }
 
   if (/^#/.test(str)) {
@@ -27,7 +27,7 @@ export function getRowType (str) {
   }
 
   if (/^>/.test(str)) {
-    return 'quote'
+    return 'blockquote'
   }
 
   if (/^---/.test(str)) {
