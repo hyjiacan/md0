@@ -76,10 +76,14 @@ const docsConfig = {
     md0: './demo/index.js'
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'docs'),
     filename: '[name].js'
   },
-  devtool: 'source-map',
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   module: {
     rules: [{
       test: /\.less$/,
@@ -94,21 +98,25 @@ const docsConfig = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[name].css'
+    }),
+    new HtmlWebpackPlugin({
+      title: 'md0',
+      template: path.resolve(__dirname, 'demo/index.html')
     })
   ]
 }
 
 
 module.exports = (env, argv) => {
-  if (argv.mode === 'development') {
+  if (argv.serve) {
     return devConfig
   }
 
-  if (argv.mode === 'production') {
+  if (argv.dist) {
     return distConfig
   }
 
-  if (argv.mode === 'none') {
+  if (argv.docs) {
     return docsConfig
   }
 

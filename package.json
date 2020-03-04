@@ -8,9 +8,9 @@
   "main": "dist/md0.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "serve": "npx webpack-dev-server --mode=development",
-    "build": "npx webpack --mode=production --progress",
-    "build:docs": "npx webpack --mode=none --progress"
+    "serve": "npx webpack-dev-server --serve --mode=development",
+    "build": "npx webpack --dist --mode=production --progress",
+    "build:docs": "npx webpack --mode=production --progress --docs"
   },
   "repository": {
     "type": "git",

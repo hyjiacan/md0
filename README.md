@@ -54,6 +54,18 @@ console.log(html)
 </script>
 ```
 
+也可以使用 cdn:
+
+```html
+<script src="https://cdn.jsdelivr.com/npm/md0/dist/md0.js"></script>
+```
+
+### cli
+
+```shell script
+md0 
+```
+
 ## Option
 
 |名字|类型|默认值|描述|

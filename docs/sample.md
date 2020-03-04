@@ -1,23 +1,23 @@
 # md0
 
-> 一个丑陋的 markdown 文档处理器
+## 标题
+
+# 一级标题
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级<span style="color: red;">红色</span>标题
 
 ---
 
 - [显示目录](./?catalog#md0)
 - [不显示目录](./#md0)
 
-GIT仓库
-
-- https://gitee.com/hyjiacan/md0
-- https://github.com/hyjiacan/md0
-
 此页面对应的 markdown 源文件
 
 - https://raw.githubusercontent.com/hyjiacan/md0/master/docs/sample.md
 - https://gitee.com/hyjiacan/md0/raw/master/docs/sample.md
-
-> 更多信息见 [README.md](https://gitee.com/hyjiacan/md0#git-readme)
 
 ## 列表
 
