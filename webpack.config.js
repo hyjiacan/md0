@@ -3,15 +3,26 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 
+const fileLoader = {
+  test: /\.(md|gif|png|jpg)$/,
+  use: [{
+    loader: 'file-loader',
+    options: {
+      publicPath: './',
+      name: '[name].[ext]'
+    }
+  }]
+}
+
 const devConfig = {
   entry: './demo/index.js',
   devtool: 'source-map',
-  output: {
-    path: path.resolve(__dirname, 'docs'),
-    filename: '[name].js'
-  },
+  // output: {
+  //   path: path.resolve(__dirname, 'docs'),
+  //   filename: '[name].js'
+  // },
   devServer: {
-    contentBase: './demo',
+    // contentBase: './',
     hot: true
   },
   module: {
@@ -22,7 +33,7 @@ const devConfig = {
         'css-loader',
         'less-loader'
       ]
-    }]
+    }, fileLoader]
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -77,10 +88,7 @@ const docsConfig = {
         'css-loader',
         'less-loader'
       ]
-    }, {
-      test: /\.(md|gif)$/,
-      use: ['file-loader']
-    }]
+    }, fileLoader]
   },
   plugins: [
     new CleanWebpackPlugin(),

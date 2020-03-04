@@ -6,9 +6,13 @@ __webpack_public_path__ = path.resolve(__dirname, 'demo')
 
 const md0 = require('../src/index').default
 
-const markdown = require('./sample.md')
+require('./img.gif')
 
-const html = md0(markdown, {
+const file = require('./sample.md')
+
+const {data: content} = xhr.getSync(file.default)
+
+const html = md0(content, {
   useHljs: window.location.search.indexOf('useHljs') !== -1,
   catalog: window.location.search.indexOf('catalog') !== -1
 })

@@ -8,7 +8,7 @@
   "main": "dist/md0.js",
   "types": "types/index.d.ts",
   "scripts": {
-    "serve": "npx webpack-dev-server --mode=development --progress",
+    "serve": "npx webpack-dev-server --mode=development",
     "build": "npx webpack --mode=production --progress",
     "build:docs": "npx webpack --mode=none --progress"
   },
@@ -18,13 +18,15 @@
   },
   "keywords": [
     "md",
-    "markdown",
-    "html"
+    "md0",
+    "markdown"
   ],
   "author": "hyjiacan",
   "license": "MIT",
   "files": [
     "dist",
+    "src",
+    "types",
     "README.md",
     "LICENSE"
   ],
@@ -39,6 +41,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
+    "file-loader": "^5.1.0",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.11.1",
     "less-loader": "^5.0.0",
@@ -47,8 +50,5 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
-  },
-  "dependencies": {
-    "file-loader": "^5.1.0"
   }
 }
