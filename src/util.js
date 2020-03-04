@@ -43,7 +43,7 @@ export function getRowType (str) {
   }
 
   if (/^&&&/.test(str)) {
-    return 'ref'
+    return 'reference'
   }
 
   if (!str) {

@@ -14,14 +14,17 @@ import catalog from './renders/catalog'
 import './md0.less'
 
 function renderRows (rows, refMap, option, catalog) {
+  // 最后生成的 html 内容
   const html = []
+
+  // 遍历每一行，分析内容
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i]
 
+    // 获取此行的类型
     let type = getRowType(row)
     let buffer
 
-    // code block
     // 代码的优先级高干一切
     if (type === 'codeblock') {
       [i, buffer] = codeblock.get(rows, i)
@@ -29,7 +32,7 @@ function renderRows (rows, refMap, option, catalog) {
       continue
     }
 
-    if (type === 'ref') {
+    if (type === 'reference') {
       let refName
       [i, buffer, refName] = reference.get(rows, i)
       refMap[refName] = renderRows(buffer, refMap, getOption(option, {
