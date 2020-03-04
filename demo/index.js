@@ -6,9 +6,9 @@ __webpack_public_path__ = path.resolve(__dirname, 'demo')
 
 const md0 = require('../src/index').default
 
-const {data} = xhr.getSync('/sample.md')
+const markdown = require('./sample.md')
 
-const html = md0(data, {
+const html = md0(markdown, {
   useHljs: window.location.search.indexOf('useHljs') !== -1,
   catalog: window.location.search.indexOf('catalog') !== -1
 })

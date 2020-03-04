@@ -9,9 +9,9 @@ import table from './renders/table'
 import newline from './renders/newline'
 import empty from './renders/empty'
 import paragraph from './renders/paragraph'
+import catalog from './renders/catalog'
 
 import './md0.less'
-import catalog from './renders/catalog'
 
 function renderRows (rows, refMap, option, catalog) {
   const html = []
