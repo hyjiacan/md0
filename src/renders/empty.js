@@ -12,5 +12,4 @@ export default {
     }
     return [--index, temp]
   }
-
 }

@@ -51,27 +51,27 @@ function renderRows (rows, refMap, option, catalog) {
     // list
     if (type === 'list') {
       [i, buffer] = list.get(rows, i, option)
-      html.push(list.render(buffer))
+      html.push(list.render(buffer, option))
       continue
     }
 
     // blockquote
     if (type === 'blockquote') {
       [i, buffer] = blockquote.get(rows, i)
-      html.push(blockquote.render(buffer))
+      html.push(blockquote.render(buffer, option))
       continue
     }
 
     // table
     if (type === 'table') {
       [i, buffer] = table.get(rows, i)
-      html.push(table.render(buffer))
+      html.push(table.render(buffer, option))
       continue
     }
 
     if (type === 'newline') {
       [i, buffer] = empty.get(rows, i)
-      html.push(newline.render(buffer))
+      html.push(newline.render(buffer, option))
       continue
     }
 
@@ -108,7 +108,7 @@ function processCodeBlock () {
  * @param {string} markdownContent Markdown content
  * @param {object} [option]
  */
-function render (markdownContent, option) {
+function md0 (markdownContent, option) {
   /**
    * 转义表
    * @type {{}}
@@ -146,11 +146,12 @@ function render (markdownContent, option) {
 
   html.push(renderRows(rows, refMap, option, catalogData))
   html.push('</div>')
-  console.info(option.catalog)
+
   if (option.catalog) {
-    html.unshift('<ul class="md0-catalog">\n' + catalogData.map(function (h) {
+    const catalogHtml = '<ul class="md0-catalog">\n' + catalogData.map(function (h) {
       return mergeString('<li><a href="#', h.text, '">', catalog.fillDots(h.level), '# ', h.text, '</a></li>')
-    }).join('\n') + '</ul>\n')
+    }).join('\n') + '</ul>\n'
+    html.unshift(option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml)
   }
   const temp = html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
     const ch = escapeMap[code]
@@ -174,4 +175,4 @@ function render (markdownContent, option) {
   return temp
 }
 
-export default render
+export default md0

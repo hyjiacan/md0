@@ -61,6 +61,7 @@ export default {
     }
     html.push('</div>')
     html.push('</div>')
-    return html.join('\n')
+
+    return option.render ? option.render('codeblock', html.join('\n'), rows) : html.join('\n')
   }
 }

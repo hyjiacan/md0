@@ -1,12 +1,13 @@
 import {mergeString} from '../util'
 
 export default {
-  render (str) {
+  render (str, option) {
     const buffer = {}
     const tpl = str
       // image
       .replace(/!\[(.+?)\]\((.*?)\)/g, function (match, group1, group2) {
-        return mergeString('<img src="', group2, '" alt="', group1, '" />')
+        const html = mergeString('<img src="', group2, '" alt="', group1, '" />')
+        return option.render ? option.render('common', html, match) : html
       })
       // hyper link
       // 处理未使用 []() 格式的超链接为 []() 格式
@@ -20,23 +21,28 @@ export default {
       })
       // hyper link
       .replace(/\[(.*?)\]\((.*?)\)/g, function (match, group1, group2) {
-        return mergeString('<a href="', group2, '" class="md0-link">', group1, '</a>')
+        const html = mergeString('<a href="', group2, '" class="md0-link">', group1, '</a>')
+        return option.render ? option.render('common', html, match) : html
       })
       // bold
       .replace(/([_*]{2})(.+?)\1/g, function (match, group1, group2) {
-        return mergeString('<b>', group2, '</b>')
+        const html = mergeString('<b>', group2, '</b>')
+        return option.render ? option.render('common', html, match) : html
       })
       // italic
       .replace(/([_*])(.+?)\1/g, function (match, group1, group2) {
-        return mergeString('<i>', group2, '</i>')
+        const html = mergeString('<i>', group2, '</i>')
+        return option.render ? option.render('common', html, match) : html
       })
       // inline code
       .replace(/(`)(.+?)\1/g, function (match, group1, group2) {
-        return mergeString('<span class="md0-code-inline">', group2.replace(/</g, '&lt;').replace(/>/g, '&gt;'), '</span>')
+        const html = mergeString('<span class="md0-code-inline">', group2.replace(/</g, '&lt;').replace(/>/g, '&gt;'), '</span>')
+        return option.render ? option.render('common', html, match) : html
       })
       // Strikethrough
       .replace(/([-~]{2})(.+?)\1/g, function (match, group1, group2) {
-        return mergeString('<span class="md0-strikethrough">', group2, '</span>')
+        const html = mergeString('<span class="md0-strikethrough">', group2, '</span>')
+        return option.render ? option.render('common', html, match) : html
       })
 
     return tpl.replace(/@\d+@/g, function (match) {

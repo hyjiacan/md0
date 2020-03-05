@@ -13,7 +13,7 @@ export default {
     }
     return [--index, temp]
   },
-  render (rows) {
+  render (rows, option) {
     // remove empty rows
     rows = removeEmptyRows(rows)
     const html = ['<table class="md0-table">']
@@ -31,7 +31,7 @@ export default {
     html.push('<thead><tr>')
     let i
     for (i = 1; i < header.length - 1; i++) {
-      html.push(mergeString('<th class="md0-table-cell ', align[i], '">', common.render(header[i]), '</th>'))
+      html.push(mergeString('<th class="md0-table-cell ', align[i], '">', common.render(header[i], option), '</th>'))
     }
     html.push('</tr></thead>')
     html.push('<tbody>')
@@ -39,12 +39,13 @@ export default {
       const row = rows[i].split('|')
       html.push('<tr>')
       for (let j = 1; j < header.length - 1; j++) {
-        html.push(mergeString('<td class="md0-table-cell ', align[j], '">', common.render(row[j]), '</td>'))
+        html.push(mergeString('<td class="md0-table-cell ', align[j], '">', common.render(row[j], option), '</td>'))
       }
       html.push('</tr>')
     }
     html.push('</tbody>')
     html.push('</table>')
-    return html.join('\n')
+
+    return option.render ? option.render('table', html.join('\n'), rows) : html.join('\n')
   }
 }

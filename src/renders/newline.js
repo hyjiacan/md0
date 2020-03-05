@@ -1,5 +1,6 @@
 export default {
-  render (rows) {
-    return rows.length > 1 ? '<br/>' : ''
+  render (rows, option) {
+    const html = rows.length > 1 ? '<br/>' : ''
+    return option.render ? option.render('newline', html, rows) : html
   }
 }

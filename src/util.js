@@ -1,3 +1,7 @@
+/**
+ * 将多个字符串合并到一起合并
+ * @return {string}
+ */
 export function mergeString () {
   return [].slice.apply(arguments).join('')
 }
@@ -81,6 +85,7 @@ export function getOption (option, customize) {
   setMergedOption(result, option, customize, 'codeHeight', 0)
   setMergedOption(result, option, customize, 'catalog', false)
   setMergedOption(result, option, customize, 'useHljs', false)
+
   return option
 }
 

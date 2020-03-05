@@ -21,10 +21,11 @@ export default {
     }
     return [--index, temp]
   },
-  render (rows) {
+  render (rows, option) {
     rows = rows.map((str) => {
-      return common.render(str.replace(/^\s*>/, ''))
+      return common.render(str.replace(/^\s*>/, ''), option)
     })
-    return mergeString('<blockquote class="md0-blockquote">', rows.join(''), '</blockquote>')
+    const html = mergeString('<blockquote class="md0-blockquote">', rows.join(''), '</blockquote>')
+    return option.render ? option.render('blockquote', html, rows) : html
   }
 }

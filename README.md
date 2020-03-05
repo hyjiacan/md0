@@ -61,8 +61,10 @@ console.log(html)
 ### cli
 
 ```shell script
-md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=true]] [--code-height[=0]] [--title-anchor[=true]] [--catalog[=false]] [--use-hljs[=false]]
+md0 <input-file> [output-file] [--options]
 ```
+
+options
 
 - input-file 要转换的markdown文件路径
 - output-file 输出文件路径，不指定时，使用相同文件名输出到与输入同一路径
@@ -73,6 +75,7 @@ md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=tr
 - title-anchor 是否渲染标题的锚点，默认为 true
 - catalog 是否根据标题渲染目录，默认为 false
 - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
+- base64 是否将图片作为 base64 插入，默认为 false
 
 ## Option
 
@@ -84,6 +87,7 @@ md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=tr
 |titleAnchor|Boolean|true|是否在标题前显示导航锚点|
 |catalog|Boolean|false|是否生成目录|
 |useHljs|Boolean|false|是否使用`highlight.js`高亮代码|
+|render|function(type, html, data)|-|自定义内容渲染器|
 
 ## Feature
 
@@ -127,4 +131,14 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 
 ## TODO
 
-- [ ] 支持图片以 base64 格式嵌入
+## 更新日志
+
+### 1.1.0
+
+- 选项添加 `render` 支持，可以自定义对一些内容的渲染
+- CLI 模式下，支持图片以 base64 串形式嵌入
+
+### 1.0.0
+
+- 完成代码模块化
+- 添加 CLI 支持

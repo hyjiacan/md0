@@ -33,11 +33,11 @@ export default {
       } else if (rowType === 'blockquote') {
         _ = temp.pop();
         [index, buffer] = blockquote.get(rows, index)
-        temp.push(_ + blockquote.render(buffer))
+        temp.push(_ + blockquote.render(buffer, option))
       } else if (rowType === 'table') {
         _ = temp.pop();
         [index, buffer] = table.get(rows, index)
-        temp.push(_ + table.render(buffer))
+        temp.push(_ + table.render(buffer, option))
       } else if (row) {
         temp.push(row)
       }
@@ -45,7 +45,7 @@ export default {
     }
     return [--index, temp]
   },
-  render (rows) {
+  render (rows, option) {
     // remove empty rows
     rows = removeEmptyRows(rows)
     const firstItem = rows[0]
@@ -88,17 +88,18 @@ export default {
       // 是否是选择列表
       if (t === 'check') {
         row = row.replace(/^\[ \]/, '')
-        row = check.render(common.render(row))
+        row = check.render(common.render(row, option), option)
       } else if (t === 'checked') {
         row = row.replace(/^\[x\]/, '')
-        row = checked.render(common.render(row))
+        row = checked.render(common.render(row, option), option)
       } else {
-        row = common.render(row)
+        row = common.render(row, option)
       }
       html.push(mergeString('<li class="md0-list-item">', row, '</li>'))
     }
 
     html.push(mergeString('</', type, '>'))
-    return html.join('\n')
+
+    return option.render ? option.render('list', html.join('\n'), rows) : html.join('\n')
   }
 }

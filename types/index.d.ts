@@ -29,6 +29,14 @@ export type Md0Options = {
      * 默认为 false
      */
     useHljs: boolean;
+
+    /**
+     * 自定义内容渲染器
+     * @param type
+     * @param html
+     * @param data
+     */
+    render(type, html, data);
 }
 
-export function md0(content: string, options: Md0Options)
+export function md0(content: string, options?: Md0Options)
