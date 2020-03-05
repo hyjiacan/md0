@@ -57,7 +57,7 @@ console.log(html)
 也可以使用 cdn:
 
 ```html
-<script src="https://cdn.jsdelivr.com/npm/md0/dist/md0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>
 ```
 
 ### cli
