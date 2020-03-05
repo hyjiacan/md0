@@ -17,6 +17,9 @@
     "type": "git",
     "url": "git+https://github.com/hyjiacan/md0.git"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.com"
+  },
   "keywords": [
     "md",
     "md0",
@@ -25,8 +28,8 @@
   "author": "hyjiacan",
   "license": "MIT",
   "files": [
+    "bin",
     "dist",
-    "src",
     "types",
     "README.md",
     "LICENSE"
