@@ -46,7 +46,7 @@ const devConfig = {
 
 const distConfig = {
   entry: {
-    md0: './src/render.js'
+    md0: './src/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

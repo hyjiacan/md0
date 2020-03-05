@@ -75,7 +75,7 @@ options
 - title-anchor 是否渲染标题的锚点，默认为 true
 - catalog 是否根据标题渲染目录，默认为 false
 - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
-- base64 是否将图片作为 base64 插入，默认为 false
+- base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
 
 ## Option
 
@@ -136,7 +136,7 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 ### 1.1.0
 
 - 选项添加 `render` 支持，可以自定义对一些内容的渲染
-- CLI 模式下，支持图片以 base64 串形式嵌入
+- CLI 模式下，支持将本地图片以 base64 数据格式嵌入
 
 ### 1.0.0
 

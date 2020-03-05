@@ -36,8 +36,9 @@ function getOptionValue (name, defaultValue) {
 !(function () {
   const usage = `md0: a ugly markdown parser
 ---------------------------------------------------
-md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=true]] [--code-height[=0]] [--title-anchor[=true]] [--catalog[=false]] [--use-hljs[=false]]
+md0 <input-file> [output-file] [--options]
 ---------------------------------------------------
+options
 - input-file 要转换的markdown文件路径
 - output-file 输出文件路径，不指定时，使用相同文件名输出到与输入同一路径
 - title 指定输出文件的 title，不指定时使用文件名
@@ -47,6 +48,7 @@ md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=tr
 - title-anchor 是否渲染标题的锚点，默认为 true
 - catalog 是否根据标题渲染目录，默认为 false
 - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
+- base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
 `
 
   const inputFile = argv._[0]
@@ -70,9 +72,30 @@ md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=tr
       codeHeader: getOptionValue('code-header', true),
       catalog: getOptionValue('catalog', false),
       useHljs: getOptionValue('use-hljs', false),
-      titleAnchor: getOptionValue('title-anchor', true)
+      titleAnchor: getOptionValue('title-anchor', true),
+      base64: getOptionValue('base64', false)
     }
-    console.info(option)
+    if (option.base64) {
+      option.render = function (type, html) {
+        if (!/^<img/i.test(html)) {
+          return html
+        }
+        const src = /src="(.+?)"/.exec(html)[1]
+        if (!src) {
+          return html
+        }
+        // TODO 暂时只支持本地图片
+        if (/^(https?|ftp):\/\//i.test(src)) {
+          return html
+        }
+        if (fs.existsSync(src)) {
+          const data = fs.readFileSync(src)
+          return html.replace(/src="(.+?)"/,
+            `src="data:image/${path.extname(src).substring(1)};base64,${data.toString('base64')}"`)
+        }
+        return html
+      }
+    }
   } catch (e) {
     console.error(e.message)
     console.info(usage)
