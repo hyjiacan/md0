@@ -146,6 +146,7 @@ function render (markdownContent, option) {
 
   html.push(renderRows(rows, refMap, option, catalogData))
   html.push('</div>')
+  console.info(option.catalog)
   if (option.catalog) {
     html.unshift('<ul class="md0-catalog">\n' + catalogData.map(function (h) {
       return mergeString('<li><a href="#', h.text, '">', catalog.fillDots(h.level), '# ', h.text, '</a></li>')

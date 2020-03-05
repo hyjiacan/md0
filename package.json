@@ -1,6 +1,6 @@
 {
   "name": "md0",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "An ugly lib to make markdown into html",
   "bin": {
     "md0": "./bin/cli.js"
@@ -10,7 +10,8 @@
   "scripts": {
     "serve": "npx webpack-dev-server --serve --mode=development",
     "build": "npx webpack --dist --mode=production --progress",
-    "build:docs": "npx webpack --mode=production --progress --docs"
+    "build:docs": "npx webpack --mode=production --progress --docs",
+    "release": "yarn build & yarn build:docs & node version.js"
   },
   "repository": {
     "type": "git",
@@ -50,5 +51,8 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
+  },
+  "peerDependencies": {
+    "yargs": "^15.1.0"
   }
 }

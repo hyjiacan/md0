@@ -21,7 +21,7 @@ function parse(option) {
     }
 
     console.log('Read template')
-    var template = fs.readFileSync('./src/template.html', {
+    var template = fs.readFileSync('./bin/template.html', {
         encoding: 'utf-8'
     })
 

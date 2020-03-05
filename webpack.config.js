@@ -46,11 +46,15 @@ const devConfig = {
 
 const distConfig = {
   entry: {
-    md0: './src/index.js'
+    md0: './src/render.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name].js',
+    library: 'md0',
+    libraryExport: 'default',
+    libraryTarget: 'umd',
+    globalObject: 'this'
   },
   devtool: 'source-map',
   module: {

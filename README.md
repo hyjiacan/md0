@@ -63,8 +63,18 @@ console.log(html)
 ### cli
 
 ```shell script
-md0 
+md0 <input-file> [output-file] [--title] [--code-header[=true]][--code-index[=true]] [--code-height[=0]] [--title-anchor[=true]] [--catalog[=false]] [--use-hljs[=false]]
 ```
+
+- input-file 要转换的markdown文件路径
+- output-file 输出文件路径，不指定时，使用相同文件名输出到与输入同一路径
+- title 指定输出文件的 title，不指定时使用文件名
+- code-header 是否渲染代码块头，默认为 true
+- code-index 是否渲染代码行号，默认为 true
+- code-height 设置代码块最大高度，单位为像素，设置为 0 时表示自动调整。默认为 0
+- title-anchor 是否渲染标题的锚点，默认为 true
+- catalog 是否根据标题渲染目录，默认为 false
+- use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
 
 ## Option
 
@@ -116,3 +126,7 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 此时，`md0.css` 需要在 `highlight.js` 的样式后引入，以使其适应主题
 
 代码高亮配置参考: https://github.com/highlightjs/highlight.js
+
+## TODO
+
+- [ ] 支持图片以 base64 格式嵌入

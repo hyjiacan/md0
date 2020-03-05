@@ -4,7 +4,7 @@ const xhr = require('./xhr')
 
 __webpack_public_path__ = path.resolve(__dirname, 'demo')
 
-const md0 = require('../src/index').default
+const md0 = require('../src/render').default
 
 require('./img.gif')
 
