@@ -2,8 +2,6 @@
 
 这是一个丑陋的 markdown 文档处理器
 
-> 最近很忙，没时间整理代码，代码凌乱，各位将就一下吧，忙过这段了再整理
-
 ## 代码
 
 - Gitee: https://gitee.com/hyjiacan/md0
