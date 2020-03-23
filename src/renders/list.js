@@ -50,8 +50,8 @@ export default {
     rows = removeEmptyRows(rows)
     const firstItem = rows[0]
     let indent = firstItem.length - firstItem.replace(/^\s+/, '').length
-    const reg = /^\s*[*-]\s/
-    const type = reg.test(firstItem) ? 'ul' : 'ol'
+    const regUl = /^\s*[*-]\s/
+    const type = regUl.test(firstItem) ? 'ul' : 'ol'
     let level = 0
     const typeStack = []
     const indentStack = []
@@ -59,12 +59,14 @@ export default {
 
     const html = [mergeString('<', type, ' class="md0-list md0-list-level-' + level + '">')]
 
+    const buffer = []
+
     for (let i = 0; i < rows.length; i++) {
       let row = rows[i]
       const itemIndent = row.length - row.replace(/^\s*/, '').length
       if (itemIndent > indent) {
         // 有更多缩进，重新获取列表类型
-        subType = reg.test(row) ? 'ul' : 'ol'
+        subType = regUl.test(row) ? 'ul' : 'ol'
         // 下级列表开始
         typeStack.push(subType)
         indentStack.push(itemIndent)
@@ -94,6 +96,15 @@ export default {
         row = checked.render(common.render(row, option), option)
       } else {
         row = common.render(row, option)
+      }
+      const nextRow = rows[i + 1]
+      if (nextRow && getRowType(nextRow) !== 'list') {
+        buffer.push(row)
+        continue
+      }
+      if (buffer.length) {
+        row = buffer.join('')
+        buffer.length = 0
       }
       html.push(mergeString('<li class="md0-list-item">', row, '</li>'))
     }
