@@ -127,51 +127,54 @@ function md0 (markdownContent, option) {
 
   let index = 0
 
-  // 1. 处理换行符和转义
+  // 处理换行符
   markdownContent = markdownContent.replace(/\r/g, '\n')
     .replace(/\n\n/g, '\n')
     .replace(/\n/g, function (match) {
       return mergeString('$LF@@FL$')
     })
-    // 处理转义
-    .replace(/\\(.)/g, function (match, ch) {
+
+  // 将代码先处理
+  markdownContent = markdownContent
+    // 代码块
+    // 需要在行内代码前处理
+    .replace(/`{3}.+?`{3}/g, function (match) {
+      cacheMap[index] = match.replace(/&/g, '&amp;')
+      return mergeString('$CODE', index++, 'EDOC$')
+    })
+    // 行内代码
+    .replace(/`.+?`/g, function (match) {
+      cacheMap[index] = match.replace(/&/g, '&amp;')
+      return mergeString('$CODE', index++, 'EDOC$')
+    })
+  
+  
+   // 处理转义
+   markdownContent = markdownContent.replace(/\\(.)/g, function (match, ch) {
       cacheMap[index] = ch
       return mergeString('$CACHE', index++, 'EHCAC$')
     })
 
-  // 2. 将代码先处理
-  markdownContent = markdownContent
-    // 行内代码
-    .replace(/`.+?`/g, function (match) {
-      cacheMap[index] = match
-      return mergeString('$CODE', index++, 'EDOC$')
-    })
-    // 代码块
-    .replace(/`{3}.+?`{3}/g, function (match) {
-      cacheMap[index] = match
-      return mergeString('$CODE', index++, 'EDOC$')
-    })
-
-  // 2. 处理剩下内容中的html
+  // 处理剩下内容中的html
   markdownContent = markdownContent.replace(/<\/?([a-z0-9_-]+?)(\s+.+?)?>/g, function (match) {
     cacheMap[index] = match
     return mergeString('$CACHE', index++, 'EHCAC$')
   })
-
-  // 3. 还原代码
-  markdownContent = markdownContent.replace(/\$CODE(\d+)EDOC\$/g, function (match, idx) {
-    return cacheMap[idx]
-  })
-
-  const rows = markdownContent
-    // 处理引用
-    .replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
+  
+  // 处理引用
+  markdownContent = markdownContent.replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
       if (!name) {
         return match
       }
       return mergeString('$REF', name, 'FER$')
     })
-    .split(/\$LF@@FL\$/g)
+
+  // 还原代码
+  markdownContent = markdownContent.replace(/\$CODE(\d+)EDOC\$/g, function (match, idx) {
+    return cacheMap[idx]
+  })
+
+  const rows = markdownContent.split(/\$LF@@FL\$/g)
 
   const html = ['<div class="md0-container">']
 
