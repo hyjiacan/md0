@@ -4,7 +4,6 @@
   list-style: none;
   background-color: #faf9f9;
   box-sizing: border-box;
-  margin-left: -40px;
 }
 .md0-catalog:before {
   content: '目录';
@@ -14,6 +13,7 @@
   font-weight: bold;
   font-size: 14px;
   padding: 5px 5px 5px 50px;
+  margin-left: -40px;
 }
 .md0-catalog li {
   padding: 5px 10px;

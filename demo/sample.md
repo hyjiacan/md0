@@ -125,7 +125,7 @@ const arr = [{
  */
 
 (async ()=>{
-    await ajax.get('/data.json')
+    await ajax.get('/data?&param1=json')
 })
 ```
 
