@@ -25,7 +25,7 @@ function renderRows (rows, refMap, option, catalog) {
     let type = getRowType(row)
     let buffer
 
-    // 代码的优先级高干一切
+    // 代码的优先级高于其他
     if (type === 'codeblock') {
       [i, buffer] = codeblock.get(rows, i)
       html.push(codeblock.render(buffer, option))
@@ -110,10 +110,10 @@ function processCodeBlock () {
  */
 function md0 (markdownContent, option) {
   /**
-   * 转义表
+   * 缓存串表
    * @type {{}}
    */
-  const escapeMap = {}
+  const cacheMap = {}
   /**
    * 引用表
    * @type {{}}
@@ -124,13 +124,46 @@ function md0 (markdownContent, option) {
    * @type {Array}
    */
   const catalogData = []
-  const rows = markdownContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+
+  let index = 0
+
+  // 1. 处理换行符和转义
+  markdownContent = markdownContent.replace(/\r/g, '\n')
+    .replace(/\n\n/g, '\n')
+    .replace(/\n/g, function (match) {
+      return mergeString('$LF@@FL$')
+    })
     // 处理转义
     .replace(/\\(.)/g, function (match, ch) {
-      const code = ch.charCodeAt(0)
-      escapeMap[code] = ch
-      return mergeString('$ESCAPE', code, 'EPACSE$')
+      cacheMap[index] = ch
+      return mergeString('$CACHE', index++, 'EHCAC$')
     })
+
+  // 2. 将代码先处理
+  markdownContent = markdownContent
+    // 行内代码
+    .replace(/`.+?`/g, function (match) {
+      cacheMap[index] = match
+      return mergeString('$CODE', index++, 'EDOC$')
+    })
+    // 代码块
+    .replace(/`{3}.+?`{3}/g, function (match) {
+      cacheMap[index] = match
+      return mergeString('$CODE', index++, 'EDOC$')
+    })
+
+  // 2. 处理剩下内容中的html
+  markdownContent = markdownContent.replace(/<\/?([a-z0-9_-]+?)(\s+.+?)?>/g, function (match) {
+    cacheMap[index] = match
+    return mergeString('$CACHE', index++, 'EHCAC$')
+  })
+
+  // 3. 还原代码
+  markdownContent = markdownContent.replace(/\$CODE(\d+)EDOC\$/g, function (match, idx) {
+    return cacheMap[idx]
+  })
+
+  const rows = markdownContent
     // 处理引用
     .replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
       if (!name) {
@@ -138,7 +171,7 @@ function md0 (markdownContent, option) {
       }
       return mergeString('$REF', name, 'FER$')
     })
-    .split('\n')
+    .split(/\$LF@@FL\$/g)
 
   const html = ['<div class="md0-container">']
 
@@ -153,12 +186,13 @@ function md0 (markdownContent, option) {
     }).join('\n') + '</ul>\n'
     html.unshift(option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml)
   }
-  const temp = html.join('\n').replace(/\$ESCAPE([0-9]+)EPACSE\$/g, function (match, code) {
-    const ch = escapeMap[code]
-    return ch === '\&' ? '&' : ch
-  }).replace(/\$REF(.+?)FER\$/g, function (match, name) {
-    return refMap[name] || mergeString('&', name, '&')
-  })
+  const temp = html.join('\n')
+    .replace(/\$REF(.+?)FER\$/g, function (match, name) {
+      return refMap[name] || mergeString('&', name, '&')
+    })
+    .replace(/\$CACHE(\d+)EHCAC\$/g, function (match, idx) {
+      return cacheMap[idx]
+    })
   if (!option.useHljs) {
     return temp
   }

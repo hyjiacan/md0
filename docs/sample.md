@@ -34,6 +34,13 @@ GIT仓库
     - 二级无序列表
 - 无序列表
 - 无序列表
+最后一项的内容1
+最后一项的内容2
+最后一项的内容3
+
+无关的内容
+无关的内容
+无关的内容
 
 ### 有序列表
 
@@ -87,6 +94,18 @@ _斜体文字_
 
 - [使用 highlight.js 高亮代码块](./?useHljs#代码)
 - [使用内置代码块](./#代码)
+
+里面包含特殊符号的代码段: `function _get_() // **aaa**`
+
+```html
+<div>
+    <ul>
+        <li>列表1</li>
+        <li>列表2</li>
+        <li>列表3</li>
+    </ul>
+</div>
+```
 
 ```javascript
 // 注释内容
@@ -174,8 +193,8 @@ class Bar():
 
 ## 选中框
 
-[ ] 未选中
-[x] 选中
+- [ ] 未选中
+- [x] 选中
 
 - [x] @mentions, #refs, [links](), **formatting**, and <del>tags</del> supported
 - [x] list syntax required (any unordered or ordered list supported)
@@ -191,8 +210,17 @@ class Bar():
 |表格|[超链接]()|![不要以为这里的图片没有加载成功，其实没有写图片路径]()|
 |_斜体_|*斜体*|表格|
 |**粗体**|--粗体--|表格|
-|代码: `let a = 'xxx'`|表格|表格|
+|代码: `let a = 'xxx'`|表格|> 引用内容|
 |表格|表格|表格|
+
+> 表格内不会渲染 `>` 标记的引用内容
+
+## html
+
+<ul>
+    <li style="color:red;/*font-size:20px;*/">列表</li>
+    <li>列表</li>
+</ul>
 
 ## 引用
 
