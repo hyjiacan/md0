@@ -147,27 +147,33 @@ function md0 (markdownContent, option) {
       cacheMap[index] = match.replace(/&/g, '&amp;')
       return mergeString('$CODE', index++, 'EDOC$')
     })
-  
-  
-   // 处理转义
-   markdownContent = markdownContent.replace(/\\(.)/g, function (match, ch) {
-      cacheMap[index] = ch
-      return mergeString('$CACHE', index++, 'EHCAC$')
-    })
+
+
+  // 处理转义
+  markdownContent = markdownContent.replace(/\\(.)/g, function (match, ch) {
+    cacheMap[index] = ch
+    return mergeString('$CACHE', index++, 'EHCAC$')
+  })
 
   // 处理剩下内容中的html
   markdownContent = markdownContent.replace(/<\/?([a-z0-9_-]+?)(\s+.+?)?>/g, function (match) {
     cacheMap[index] = match
     return mergeString('$CACHE', index++, 'EHCAC$')
   })
-  
+
   // 处理引用
   markdownContent = markdownContent.replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
-      if (!name) {
-        return match
-      }
-      return mergeString('$REF', name, 'FER$')
-    })
+    if (!name) {
+      return match
+    }
+    return mergeString('$REF', name, 'FER$')
+  })
+
+  // 是否有 [toc] （目录标记）
+  const renderCatalog = /\[toc]/i.test(markdownContent)
+  if (renderCatalog) {
+    markdownContent = markdownContent.replace(/\[toc]/i, '@CATALOG-TOC-GOLATAC@')
+  }
 
   // 还原代码
   markdownContent = markdownContent.replace(/\$CODE(\d+)EDOC\$/g, function (match, idx) {
@@ -183,19 +189,26 @@ function md0 (markdownContent, option) {
   html.push(renderRows(rows, refMap, option, catalogData))
   html.push('</div>')
 
-  if (option.catalog) {
-    const catalogHtml = '<ul class="md0-catalog">\n' + catalogData.map(function (h) {
-      return mergeString('<li><a href="#', h.text, '">', catalog.fillDots(h.level), '# ', h.text, '</a></li>')
-    }).join('\n') + '</ul>\n'
-    html.unshift(option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml)
-  }
-  const temp = html.join('\n')
+  let temp = html.join('\n')
     .replace(/\$REF(.+?)FER\$/g, function (match, name) {
       return refMap[name] || mergeString('&', name, '&')
     })
     .replace(/\$CACHE(\d+)EHCAC\$/g, function (match, idx) {
       return cacheMap[idx]
     })
+
+  if (option.catalog || renderCatalog) {
+    const catalogHtml = '<ul class="md0-catalog">\n' + catalogData.map(function (h) {
+      return mergeString('<li><a href="#', h.text, '">', catalog.fillDots(h.level), '# ', h.text, '</a></li>')
+    }).join('\n') + '</ul>\n'
+
+    if (renderCatalog) {
+      temp = temp.replace('@CATALOG-TOC-GOLATAC@', catalogHtml)
+    } else {
+      temp = html.unshift(option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml) + temp
+    }
+  }
+
   if (!option.useHljs) {
     return temp
   }
