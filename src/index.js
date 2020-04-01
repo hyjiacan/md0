@@ -1,4 +1,4 @@
-import {getOption, getRowType, mergeString} from './util'
+import {getOption, getRowType} from './util'
 
 import reference from './renders/reference'
 import title from './renders/title'
@@ -131,7 +131,7 @@ function md0 (markdownContent, option) {
   markdownContent = markdownContent.replace(/\r/g, '\n')
     .replace(/\n\n/g, '\n')
     .replace(/\n/g, function (match) {
-      return mergeString('$LF@@FL$')
+      return '$LF@@FL$'
     })
 
   // 将代码先处理
@@ -140,25 +140,25 @@ function md0 (markdownContent, option) {
     // 需要在行内代码前处理
     .replace(/`{3}.+?`{3}/g, function (match) {
       cacheMap[index] = match.replace(/&/g, '&amp;')
-      return mergeString('$CODE', index++, 'EDOC$')
+      return `$CODE${index++}EDOC$`
     })
     // 行内代码
     .replace(/`.+?`/g, function (match) {
       cacheMap[index] = match.replace(/&/g, '&amp;')
-      return mergeString('$CODE', index++, 'EDOC$')
+      return `$CODE${index++}EDOC$`
     })
 
 
   // 处理转义
   markdownContent = markdownContent.replace(/\\(.)/g, function (match, ch) {
     cacheMap[index] = ch
-    return mergeString('$CACHE', index++, 'EHCAC$')
+    return `$CACHE${index++}EHCAC$`
   })
 
   // 处理剩下内容中的html
   markdownContent = markdownContent.replace(/<\/?([a-z0-9_-]+?)(\s+.+?)?>/g, function (match) {
     cacheMap[index] = match
-    return mergeString('$CACHE', index++, 'EHCAC$')
+    return `$CACHE${index++}EHCAC$`
   })
 
   // 处理引用
@@ -166,7 +166,7 @@ function md0 (markdownContent, option) {
     if (!name) {
       return match
     }
-    return mergeString('$REF', name, 'FER$')
+    return `$REF${index++}FER$`
   })
 
   // 是否有 [toc] （目录标记）
@@ -191,7 +191,7 @@ function md0 (markdownContent, option) {
 
   let temp = html.join('\n')
     .replace(/\$REF(.+?)FER\$/g, function (match, name) {
-      return refMap[name] || mergeString('&', name, '&')
+      return refMap[name] || `&${name}&`
     })
     .replace(/\$CACHE(\d+)EHCAC\$/g, function (match, idx) {
       return cacheMap[idx]
@@ -199,13 +199,13 @@ function md0 (markdownContent, option) {
 
   if (option.catalog || renderCatalog) {
     const catalogHtml = '<ul class="md0-catalog">\n' + catalogData.map(function (h) {
-      return mergeString('<li><a href="#', h.text, '">', catalog.fillDots(h.level), '# ', h.text, '</a></li>')
+      return `<li><a href="#${h.text}">${catalog.fillDots(h.level)}# ${h.text}</a></li>`
     }).join('\n') + '</ul>\n'
 
     if (renderCatalog) {
       temp = temp.replace('@CATALOG-TOC-GOLATAC@', catalogHtml)
     } else {
-      temp = html.unshift(option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml) + temp
+      temp = (option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml) + temp
     }
   }
 

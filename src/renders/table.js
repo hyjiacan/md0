@@ -1,4 +1,4 @@
-import {getRowType, mergeString, removeEmptyRows} from '../util'
+import {getRowType, removeEmptyRows} from '../util'
 import common from './common'
 
 export default {
@@ -31,7 +31,7 @@ export default {
     html.push('<thead><tr>')
     let i
     for (i = 1; i < header.length - 1; i++) {
-      html.push(mergeString('<th class="md0-table-cell ', align[i], '">', common.render(header[i], option), '</th>'))
+      html.push(`<th class="md0-table-cell ${align[i]}">${common.render(header[i], option)}</th>`)
     }
     html.push('</tr></thead>')
     html.push('<tbody>')
@@ -39,7 +39,7 @@ export default {
       const row = rows[i].split('|')
       html.push('<tr>')
       for (let j = 1; j < header.length - 1; j++) {
-        html.push(mergeString('<td class="md0-table-cell ', align[j], '">', common.render(row[j], option), '</td>'))
+        html.push(`<td class="md0-table-cell ${align[j]}">${common.render(row[j], option)}</td>`)
       }
       html.push('</tr>')
     }

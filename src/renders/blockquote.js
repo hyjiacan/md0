@@ -1,5 +1,5 @@
 import common from './common'
-import {getRowType, mergeString} from '../util'
+import {getRowType} from '../util'
 
 export default {
   get (rows, index) {
@@ -25,7 +25,7 @@ export default {
     rows = rows.map((str) => {
       return common.render(str.replace(/^\s*>/, ''), option)
     })
-    const html = mergeString('<blockquote class="md0-blockquote">', rows.join(''), '</blockquote>')
+    const html = `<blockquote class="md0-blockquote">${rows.join('')}</blockquote>`
     return option.render ? option.render('blockquote', html, rows) : html
   }
 }

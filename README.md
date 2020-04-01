@@ -74,6 +74,7 @@ options
 - catalog 是否根据标题渲染目录，默认为 false
 - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
 - base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
+- emoji-size 设置 emoji 的大小，默认为 18px
 
 ## Option
 
@@ -86,10 +87,13 @@ options
 |catalog|Boolean|false|是否生成目录|
 |useHljs|Boolean|false|是否使用`highlight.js`高亮代码|
 |render|function(type, html, data)|-|自定义内容渲染器|
+|emojiSize|String|18px|指定 `emoji` 的大小 *since 1.2.0*|
 
 注意：指定了 `catalog` 参数 **或** markdown 文件中包含 `[toc]` 标记时，均会生成目录。
 不同之处在于，如果指定了 `[toc]` 那么目录会放置在 `[toc]` 处，否则会放置在文档最前方。
 另外，仅会处理第一个 `[toc]` 标记。 *Since 1.2.0*
+
+`emoji` 列表来自 https://api.github.com/emojis，其图片为在线url
 
 ## Feature
 
@@ -132,8 +136,6 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 代码高亮配置参考: https://github.com/highlightjs/highlight.js
 
 ## TODO
-
-- emoji 支持
 
 ## 更新日志
 

@@ -1,4 +1,4 @@
-import {getRowType, mergeString, rowFilter} from '../util'
+import {getRowType, rowFilter} from '../util'
 
 export default {
   get (rows, index) {
@@ -27,25 +27,25 @@ export default {
     // remove the last row
     rows.pop()
 
-    const html = [mergeString('<div class="md0-code-block" data-lang="', lang, '">')]
+    const html = [`<div class="md0-code-block" data-lang="${lang}">`]
     if (option.codeHeader) {
-      html.push(mergeString('<div class="md0-code-block-header"><span class="md0-code-block-lang">', lang, '</span></div>'))
+      html.push(`<div class="md0-code-block-header"><span class="md0-code-block-lang">${lang}</span></div>`)
     }
     let style = ''
     if (option.codeHeight) {
-      style = mergeString('overflow: auto; max-height: ', option.codeHeight, 'px')
+      style = `overflow: auto; max-height: ${option.codeHeight}px`
     }
-    html.push(mergeString('<div class="md0-code-block-body" style="', style, '">'))
+    html.push(`<div class="md0-code-block-body" style="${style}">`)
     // 行号
     if (option.codeIndex) {
       html.push('<div class="md0-code-block-gutter">')
       rows.forEach((str, i) => {
-        html.push(mergeString('<span class="md0-code-block-rowindex">', i + 1, '</span>'))
+        html.push(`<span class="md0-code-block-rowindex">${i + 1}</span>`)
       })
       html.push('</div>')
     }
     if (option.useHljs) {
-      html.push(mergeString('<pre class="md0-code-block-content" style="', style, '"><code class="' + lang + '">'))
+      html.push(`<pre class="md0-code-block-content" style="${style}"><code class="${lang}">`)
 
       rows.forEach((str) => {
         // 移除多余的缩进
@@ -55,7 +55,7 @@ export default {
     } else {
       html.push('<div class="md0-code-block-content">')
       rows.forEach((str) => {
-        html.push(mergeString('<div class="md0-code-block-line">', rowFilter(str, indent, true), '</div>'))
+        html.push(`<div class="md0-code-block-line">${rowFilter(str, indent, true)}</div>`)
       })
       html.push('</div>')
     }

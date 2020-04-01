@@ -1,4 +1,3 @@
-import {mergeString} from '../util'
 import common from './common'
 
 export default {
@@ -15,9 +14,9 @@ export default {
       level: level,
       text: pureText
     })
-    const anchor = option.titleAnchor ? mergeString('<a href="#', pureText, '" class="md0-title-anchor"></a>') : ''
-    const html = mergeString('<', tag, ' id="', pureText, '" class="md0-title-', tag, '">', anchor,
-      '<span class="md0-title-text">', text.replace(/^\s+/, ''), '</span></', tag, '>')
+    const anchor = option.titleAnchor ? `<a href="#${pureText}" class="md0-title-anchor"></a>` : ''
+    const html = `<${tag} id="${pureText}" class="md0-title-${tag}">${anchor}
+    <span class="md0-title-text">${text.replace(/^\s+/, '')}</span></${tag}>`
 
     return option.render ? option.render('title', html, str) : html
   }

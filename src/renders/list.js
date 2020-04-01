@@ -1,4 +1,4 @@
-import {getRowType, mergeString, removeEmptyRows} from '../util'
+import {getRowType, removeEmptyRows} from '../util'
 import codeblock from './codeblock'
 import blockquote from './blockquote'
 import table from './table'
@@ -57,7 +57,7 @@ export default {
     const indentStack = []
     let subType
 
-    const html = [mergeString('<', type, ' class="md0-list md0-list-level-' + level + '">')]
+    const html = [`<${type} class="md0-list md0-list-level-${level}">`]
 
     const buffer = []
 
@@ -70,7 +70,7 @@ export default {
         // 下级列表开始
         typeStack.push(subType)
         indentStack.push(itemIndent)
-        html.push(mergeString('<', subType, ' class="md0-list md0-list-level-' + (++level) + '">'))
+        html.push(`<${subType} class="md0-list md0-list-level-${++level}">`)
       } else if (itemIndent < indent) {
         // 下级列表结束
         while (true) {
@@ -81,7 +81,7 @@ export default {
             break
           }
           indentStack.pop()
-          html.push(mergeString('</', typeStack.pop(), '>'))
+          html.push(`</${typeStack.pop()}>`)
         }
       }
       indent = itemIndent
@@ -106,10 +106,10 @@ export default {
         row = buffer.join('')
         buffer.length = 0
       }
-      html.push(mergeString('<li class="md0-list-item">', row, '</li>'))
+      html.push(`<li class="md0-list-item">${row}</li>`)
     }
 
-    html.push(mergeString('</', type, '>'))
+    html.push(`</${type}>`)
 
     return option.render ? option.render('list', html.join('\n'), rows) : html.join('\n')
   }
