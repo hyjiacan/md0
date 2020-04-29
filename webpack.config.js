@@ -14,6 +14,13 @@ const fileLoader = {
   }]
 }
 
+const babelLoader = {
+  test: /\.js$/,
+  exclude: /(node_modules|dist|docs)/,
+  loader: 'babel-loader'
+}
+
+
 const devConfig = {
   entry: './demo/index.js',
   devtool: 'source-map',
@@ -65,7 +72,7 @@ const distConfig = {
         'css-loader',
         'less-loader'
       ]
-    }]
+    }, babelLoader]
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -96,7 +103,7 @@ const docsConfig = {
         'css-loader',
         'less-loader'
       ]
-    }, fileLoader]
+    }, fileLoader, babelLoader]
   },
   plugins: [
     new CleanWebpackPlugin(),

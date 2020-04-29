@@ -42,6 +42,9 @@
   },
   "homepage": "https://hyjiacan.github.io/md0/",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.4.2",
     "eslint": "^6.8.0",
@@ -57,5 +60,8 @@
   },
   "peerDependencies": {
     "yargs": "^15.1.0"
+  },
+  "dependencies": {
+    "walkdir": "^0.4.1"
   }
 }

@@ -3,9 +3,12 @@
 const fs = require('fs')
 const path = require('path')
 const argv = require('yargs').argv
+const walk = require('walkdir')
 const md0 = require('../dist/md0')
 
-function getOptionValue (name, defaultValue) {
+const workingDir = process.cwd()
+
+function getOptionValue(name, defaultValue) {
   if (!argv.hasOwnProperty(name)) {
     return defaultValue
   }
@@ -33,14 +36,65 @@ function getOptionValue (name, defaultValue) {
   return val
 }
 
-!(function () {
+function parse(inputFile, outputFile, option) {
+  const template = fs.readFileSync(path.join(__dirname, 'template.html'), {
+    encoding: 'utf-8'
+  })
+
+  console.log('Read ' + inputFile)
+  const content = fs.readFileSync(inputFile, {
+    encoding: 'utf8'
+  })
+
+  console.log('Parse content')
+  console.time('parse')
+
+  const markdownHtml = md0(content, option)
+
+  const title = option.title || path.basename(inputFile, path.extname(inputFile))
+  const css = fs.readFileSync(path.join(__dirname, '../dist/md0.css'), {
+    encoding: 'utf-8'
+  })
+
+  const html = template
+    .replace('{title}', title)
+    .replace('/*{style}*/', css)
+    .replace('{content}', markdownHtml)
+  console.timeEnd('parse')
+  console.log('Write ' + outputFile)
+  fs.writeFileSync(outputFile, html, {
+    encoding: 'utf8'
+  })
+}
+
+function getOutputFile(inputRoot, inputFile, outputDir) {
+  outputDir = path.isAbsolute(outputDir) ? outputDir : path.join(workingDir, outputDir)
+
+  // 获取相对路径
+  const relativePath = path.relative(inputRoot, inputFile)
+  // 更换扩展名
+  const htmlFile = path.join(path.dirname(relativePath), path.basename(relativePath, path.extname(relativePath))) + '.html'
+
+  const outputFile = path.join(outputDir, htmlFile)
+  const outputPath = path.dirname(outputFile)
+
+  if (!fs.existsSync(outputPath)) {
+    console.info('mkdir: %s', outputPath)
+    fs.mkdirSync(outputPath, {recursive: true})
+  }
+
+  return outputFile
+}
+
+function usage() {
   const usage = `md0: a ugly markdown parser
 ---------------------------------------------------
-md0 <input-file> [output-file] [--options]
+md0 <input> [--options]
 ---------------------------------------------------
+input 要转换的markdown文件/目录(-dir)
 options
-- input-file 要转换的markdown文件路径
-- output-file 输出文件路径，不指定时，使用相同文件名输出到与输入同一路径
+- output 输出目录，默认为 output
+- dir 输入为目录
 - title 指定输出文件的 title，不指定时使用文件名
 - code-header 是否渲染代码块头，默认为 true
 - code-index 是否渲染代码行号，默认为 true
@@ -50,18 +104,18 @@ options
 - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
 - base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
 `
+  console.info(usage)
+}
 
-  const inputFile = argv._[0]
-  if (!inputFile) {
-    console.info(usage)
+!(function () {
+  const input = argv._[0]
+  if (!input) {
+    usage()
     return
   }
 
-  let outputFile = argv._[1]
-  if (!outputFile) {
-    // 与输入文件相同
-    outputFile = `${inputFile}.html`
-  }
+  const isDir = getOptionValue('dir', false)
+  const output = getOptionValue('output', 'output')
 
   let option
 
@@ -102,32 +156,17 @@ options
     return
   }
 
-  const template = fs.readFileSync(path.join(__dirname, 'template.html'), {
-    encoding: 'utf-8'
-  })
+  if (!isDir) {
+    parse(input, getOutputFile(path.dirname(input), input, output), option)
+    return
+  }
 
-  console.log('Read ' + inputFile)
-  const content = fs.readFileSync(inputFile, {
-    encoding: 'utf8'
-  })
+  const emitter = walk(input)
 
-  console.log('Parse content')
-  console.time('parse')
-
-  const markdownHtml = md0(content, option)
-
-  const title = option.title || path.basename(inputFile, path.extname(inputFile))
-  const css = fs.readFileSync(path.join(__dirname, '../dist/md0.css'), {
-    encoding: 'utf-8'
-  })
-
-  const html = template
-    .replace('{title}', title)
-    .replace('/*{style}*/', css)
-    .replace('{content}', markdownHtml)
-  console.timeEnd('parse')
-  console.log('Write ' + outputFile)
-  fs.writeFileSync(outputFile, html, {
-    encoding: 'utf8'
+  emitter.on('file', (i, stat) => {
+    if (!(/\.(md|markdown)$/i.test(i))) {
+      return
+    }
+    parse(i, getOutputFile(input, i, output), option)
   })
 })()

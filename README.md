@@ -59,22 +59,21 @@ console.log(html)
 ### cli
 
 ```shell script
-md0 <input-file> [output-file] [--options]
+md0 <input> [--options]
 ```
 
-options
-
-- input-file 要转换的markdown文件路径
-- output-file 输出文件路径，不指定时，使用相同文件名输出到与输入同一路径
-- title 指定输出文件的 title，不指定时使用文件名
-- code-header 是否渲染代码块头，默认为 true
-- code-index 是否渲染代码行号，默认为 true
-- code-height 设置代码块最大高度，单位为像素，设置为 0 时表示自动调整。默认为 0
-- title-anchor 是否渲染标题的锚点，默认为 true
-- catalog 是否根据标题渲染目录，默认为 false
-- use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
-- base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
-- emoji-size 设置 emoji 的大小，默认为 18px
+- input 要转换的markdown文件/目录(-dir)
+- options
+    - output 输出目录，默认为 output
+    - dir 输入为目录
+    - title 指定输出文件的 title，不指定时使用文件名
+    - code-header 是否渲染代码块头，默认为 true
+    - code-index 是否渲染代码行号，默认为 true
+    - code-height 设置代码块最大高度，单位为像素，设置为 0 时表示自动调整。默认为 0
+    - title-anchor 是否渲染标题的锚点，默认为 true
+    - catalog 是否根据标题渲染目录，默认为 false
+    - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
+    - base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
 
 ## Option
 
@@ -136,6 +135,10 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 代码高亮配置参考: https://github.com/highlightjs/highlight.js
 
 ## TODO
+
+- [x] 添加 cli 对目录的处理
+- [ ] cli 添加 `watch` 选项以支持实时渲染
+- [ ] webpack-loader. see [markdown-loader](https://www.npmjs.com/package/markdown-loader)
 
 ## 更新日志
 

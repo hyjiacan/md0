@@ -3,7 +3,7 @@
  * @param str
  * @return {string}
  */
-export function getRowType (str) {
+export function getRowType(str) {
   str = str.replace(/^\s*/g, '')
 
   if (/^\s*```/.test(str)) {
@@ -52,13 +52,13 @@ export function getRowType (str) {
  * @param rows
  * @return {*}
  */
-export function removeEmptyRows (rows) {
+export function removeEmptyRows(rows) {
   return rows.filter(function (row) {
     return !/^\s*$/.test(row)
   })
 }
 
-function setMergedOption (result, option, customize, property, defaultValue) {
+function setMergedOption(result, option, customize, property, defaultValue) {
   if (customize.hasOwnProperty(property)) {
     option[property] = customize[property]
   } else {
@@ -66,7 +66,7 @@ function setMergedOption (result, option, customize, property, defaultValue) {
   }
 }
 
-export function getOption (option, customize) {
+export function getOption(option, customize) {
   option = option || {}
   customize = customize || {}
   const result = {}
@@ -88,10 +88,15 @@ export function getOption (option, customize) {
  * @param indent
  * @param space 是否处理空格
  */
-export function rowFilter (row, indent, space) {
+export function rowFilter(row, indent, space) {
   const temp = row.substring(indent ? indent.length : 0)
     .replace(/\t/g, '    ')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
   return space ? temp.replace(/ /g, '&nbsp;') : temp
+}
+
+export function loadEmoji() {
+  // TODO 需要使用缓存
+  // https://api.github.com/emojis
 }
