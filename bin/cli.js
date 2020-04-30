@@ -6,6 +6,8 @@ const argv = require('yargs').argv
 const walk = require('walkdir')
 const md0 = require('../dist/md0')
 
+const emojis = require('../assets/emojis')
+
 const workingDir = process.cwd()
 
 function getOptionValue(name, defaultValue) {
@@ -91,10 +93,9 @@ function usage() {
 ---------------------------------------------------
 md0 <input> [--options]
 ---------------------------------------------------
-input 要转换的markdown文件/目录(-dir)
+input 要转换的markdown文件/目录
 options
 - output 输出目录，默认为 output
-- dir 输入为目录
 - title 指定输出文件的 title，不指定时使用文件名
 - code-header 是否渲染代码块头，默认为 true
 - code-index 是否渲染代码行号，默认为 true
@@ -108,13 +109,23 @@ options
 }
 
 !(function () {
-  const input = argv._[0]
+  let input = argv._[0]
   if (!input) {
     usage()
     return
   }
 
-  const isDir = getOptionValue('dir', false)
+  if (!path.isAbsolute(input)) {
+    input = path.resolve(path.join(workingDir, input))
+  }
+
+  if (!fs.existsSync(input)) {
+    console.info('[md0] File/Path not found: %s', input)
+    return
+  }
+  // 根据输入判断是否是目录
+  const isDir = fs.statSync(input).isDirectory()
+
   const output = getOptionValue('output', 'output')
 
   let option
@@ -127,7 +138,8 @@ options
       catalog: getOptionValue('catalog', false),
       useHljs: getOptionValue('use-hljs', false),
       titleAnchor: getOptionValue('title-anchor', true),
-      base64: getOptionValue('base64', false)
+      base64: getOptionValue('base64', false),
+      emojis
     }
     if (option.base64) {
       option.render = function (type, html) {

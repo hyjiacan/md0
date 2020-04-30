@@ -1,7 +1,5 @@
-import emojis from '../assets/emojis'
-
 export default {
-  render (str, option) {
+  render(str, option) {
     const buffer = {}
     let i = 0
     const tpl = str
@@ -15,7 +13,7 @@ export default {
       })
       // emoji
       .replace(/:(.+?):/g, function (match, group1) {
-        const img = emojis[group1]
+        const img = option.emojis[group1]
         // 无效的 emoji
         if (!img) {
           return match

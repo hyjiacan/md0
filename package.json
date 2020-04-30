@@ -9,9 +9,11 @@
   "types": "types/index.d.ts",
   "scripts": {
     "serve": "npx webpack-dev-server --serve --mode=development",
+    "emojis": "node util/emojis.js",
     "build": "npx webpack --dist --mode=production --progress",
     "build:docs": "npx webpack --mode=production --progress --docs",
-    "release": "yarn build & yarn build:docs & node version.js"
+    "release": "npm run build & npm run build:docs & node version.js",
+    "postinstall": "npm run emojis"
   },
   "repository": {
     "type": "git",

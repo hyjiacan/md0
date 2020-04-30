@@ -77,6 +77,7 @@ export function getOption(option, customize) {
   setMergedOption(result, option, customize, 'codeHeight', 0)
   setMergedOption(result, option, customize, 'catalog', false)
   setMergedOption(result, option, customize, 'useHljs', false)
+  setMergedOption(result, option, customize, 'emojis', {})
   setMergedOption(result, option, customize, 'emojiSize', '18px')
 
   return option
@@ -94,9 +95,4 @@ export function rowFilter(row, indent, space) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
   return space ? temp.replace(/ /g, '&nbsp;') : temp
-}
-
-export function loadEmoji() {
-  // TODO 需要使用缓存
-  // https://api.github.com/emojis
 }

@@ -56,16 +56,26 @@ console.log(html)
 <script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>
 ```
 
-### cli
+### CLI
+
+安装到全局
+
+```shell
+# npm
+npm install md0 -g
+# yarn
+yarn global add md0
+```
+
+安装后，就能够使用全局的命令 `md0`
 
 ```shell script
 md0 <input> [--options]
 ```
 
-- input 要转换的markdown文件/目录(-dir)
+- input 要转换的markdown文件/目录
 - options
     - output 输出目录，默认为 output
-    - dir 输入为目录
     - title 指定输出文件的 title，不指定时使用文件名
     - code-header 是否渲染代码块头，默认为 true
     - code-index 是否渲染代码行号，默认为 true
@@ -74,6 +84,28 @@ md0 <input> [--options]
     - catalog 是否根据标题渲染目录，默认为 false
     - use-hljs 是否使用 highlight.js 高亮代码块，默认为 false
     - base64 是否将本地图片作为 base64 数据格式嵌入，默认为 false
+
+注意：当 **input** 是目录时，会处理其下的所有匹配文件 
+
+### 示例
+
+处理单个文件
+
+```shell
+md0 /path/to/awesome.md
+```
+
+此时输出文件为 *output/awesome.html* 
+
+处理目录下所有文件
+
+```shell
+md0 /path/to --output dist
+```
+
+此时会处理目录 */path/to* 下的所有文件，并将输出写入目录 *dist* 。
+
+输出目录是相对于执行 `md0` 命令的目录。
 
 ## Option
 
@@ -86,6 +118,7 @@ md0 <input> [--options]
 |catalog|Boolean|false|是否生成目录|
 |useHljs|Boolean|false|是否使用`highlight.js`高亮代码|
 |render|function(type, html, data)|-|自定义内容渲染器|
+|emojis|Object|-|指定 `emoji` 的标识与图片映射关系的对象，目前 CLI 是从 https://api.github.com/emojis 获取 *since 1.2.0*|
 |emojiSize|String|18px|指定 `emoji` 的大小 *since 1.2.0*|
 
 注意：指定了 `catalog` 参数 **或** markdown 文件中包含 `[toc]` 标记时，均会生成目录。
@@ -136,8 +169,8 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 
 ## TODO
 
-- [x] 添加 cli 对目录的处理
-- [ ] cli 添加 `watch` 选项以支持实时渲染
+- [ ] CLI 支持处理时同时复制引用的资源（图片等）到输出目录
+- [ ] CLI 添加 `watch` 选项以支持实时渲染
 - [ ] webpack-loader. see [markdown-loader](https://www.npmjs.com/package/markdown-loader)
 
 ## 更新日志
@@ -145,6 +178,8 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 ### 1.2.0
 
 - 添加 `[toc]` 标记支持
+- 优化 emoji 支持
+- 添加 cli 对目录的处理
 
 ### 1.1.3
 
