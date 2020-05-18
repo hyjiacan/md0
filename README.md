@@ -169,6 +169,7 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 
 ## TODO
 
+- [ ] 输出时不附加样式(代码块不添加额外样式)，以及对代码块的html标签简化
 - [ ] CLI 支持处理时同时复制引用的资源（图片等）到输出目录
 - [ ] CLI 添加 `watch` 选项以支持实时渲染
 - [ ] webpack-loader. see [markdown-loader](https://www.npmjs.com/package/markdown-loader)
