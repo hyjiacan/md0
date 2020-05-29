@@ -13,7 +13,7 @@ import catalog from './renders/catalog'
 
 import './md0.less'
 
-function renderRows (rows, refMap, option, catalog) {
+function renderRows(rows, refMap, option, catalog) {
   // 最后生成的 html 内容
   const html = []
 
@@ -90,7 +90,7 @@ function renderRows (rows, refMap, option, catalog) {
   return html.join('\n')
 }
 
-function processCodeBlock () {
+function processCodeBlock() {
   if (hljs) hljs.initHighlighting()
   const codes = document.querySelectorAll('pre>code')
   codes.forEach(function (codeBlock) {
@@ -108,7 +108,7 @@ function processCodeBlock () {
  * @param {string} markdownContent Markdown content
  * @param {object} [option]
  */
-function md0 (markdownContent, option) {
+function md0(markdownContent, option) {
   /**
    * 缓存串表
    * @type {{}}
@@ -127,9 +127,11 @@ function md0 (markdownContent, option) {
 
   let index = 0
 
+  // 不能将多个空行合并成一个，即：不能执行 replace(/\n\n/g, '\n')
+  // 因为替换会导致原有的格式发生变化，从而影响解析结果
+
   // 处理换行符
   markdownContent = markdownContent.replace(/\r/g, '\n')
-    .replace(/\n\n/g, '\n')
     .replace(/\n/g, function (match) {
       return '$LF@@FL$'
     })

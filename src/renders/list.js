@@ -17,6 +17,7 @@ export default {
       const rowType = getRowType(row)
       if (rowType === 'newline') {
         emptyLineCount++
+        // 两个空行了
         if (emptyLineCount === 2) {
           break
         }
