@@ -21,7 +21,7 @@ export default {
     while (!defineLine) {
       defineLine = rows.shift()
     }
-    const temp = /^(\s*)```(.+?)\s*$/.exec(defineLine)
+    const temp = /^(\s*)```(.+?)?\s*$/.exec(defineLine)
     const indent = temp[1]
     const lang = temp[2] || 'text'
     // remove the last row
