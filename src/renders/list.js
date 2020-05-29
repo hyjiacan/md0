@@ -7,7 +7,7 @@ import check from './check'
 import checked from './checked'
 
 export default {
-  get (rows, index, option) {
+  get(rows, index, option) {
     const temp = [rows[index++]]
     let emptyLineCount = 0
     let buffer, _
@@ -46,7 +46,7 @@ export default {
     }
     return [--index, temp]
   },
-  render (rows, option) {
+  render(rows, option) {
     // remove empty rows
     rows = removeEmptyRows(rows)
     const firstItem = rows[0]

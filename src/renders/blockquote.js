@@ -2,15 +2,13 @@ import common from './common'
 import {getRowType} from '../util'
 
 export default {
-  get (rows, index) {
+  get(rows, index) {
     const temp = [rows[index++]]
-    let indent = -1
+    // 初始缩进
+    const indent = temp[0].length - temp[0].replace(/^\s*/, '').length
     for (; index < rows.length; index++) {
       const row = rows[index]
       const rowIndent = row.length - row.replace(/^\s*/, '').length
-      if (indent === -1) {
-        indent = rowIndent
-      }
       if (getRowType(row) === 'newline') {
         break
       }
@@ -21,11 +19,12 @@ export default {
     }
     return [--index, temp]
   },
-  render (rows, option) {
+  render(rows, option) {
+    const indent = /^\s*/.exec(rows[0])[0].length
     rows = rows.map((str) => {
       return common.render(str.replace(/^\s*>/, ''), option)
     })
-    const html = `<blockquote class="md0-blockquote">${rows.join('')}</blockquote>`
+    const html = `<blockquote class="md0-blockquote" style="margin-left: ${indent}em">${rows.join('')}</blockquote>`
     return option.render ? option.render('blockquote', html, rows) : html
   }
 }
