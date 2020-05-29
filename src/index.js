@@ -215,7 +215,7 @@ function md0 (markdownContent, option) {
   // 处理 highlight.js 渲染后的代码行
   if (global.window !== global) {
     // node 环境
-    return temp + ['<' + 'script>', processCodeBlock.toString(), 'processCodeBlock();</' + 'script>'].join('')
+    return temp + ['<' + 'script>', processCodeBlock.toString(), processCodeBlock.name, '();</' + 'script>'].join('')
   }
   // 浏览器环境
   // 等待DOM渲染完成再调用
