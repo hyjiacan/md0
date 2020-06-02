@@ -6,7 +6,7 @@ export default {
     const temp = [rows[index++]]
     for (; index < rows.length; index++) {
       const row = rows[index]
-      if (getRowType(row) !== 'table') {
+      if (getRowType(row) !== 'table-row') {
         break
       }
       temp.push(row)

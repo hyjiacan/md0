@@ -1,6 +1,6 @@
 {
   "name": "md0",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "An ugly lib to make markdown into html",
   "bin": {
     "md0": "./bin/cli.js"

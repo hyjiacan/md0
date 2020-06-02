@@ -22,7 +22,8 @@ function renderRows(rows, refMap, option, catalog) {
     const row = rows[i]
 
     // 获取此行的类型
-    let type = getRowType(row)
+    let type = getRowType(row, rows[i + 1])
+
     let buffer
 
     // 代码的优先级高于其他
@@ -63,7 +64,7 @@ function renderRows(rows, refMap, option, catalog) {
     }
 
     // table
-    if (type === 'table') {
+    if (type === 'table-header') {
       [i, buffer] = table.get(rows, i)
       html.push(table.render(buffer, option))
       continue
@@ -131,13 +132,12 @@ function md0(markdownContent, option) {
   // 因为替换会导致原有的格式发生变化，从而影响解析结果
 
   // 处理换行符
-  markdownContent = markdownContent.replace(/\r/g, '\n')
-    .replace(/\n/g, function (match) {
+  markdownContent = markdownContent
+    .replace(/\r?\n/g, function (match) {
       return '$LF@@FL$'
     })
 
-  // 将代码先处理
-  markdownContent = markdownContent
+    // 将代码先处理
     // 代码块
     // 需要在行内代码前处理
     .replace(/`{3}.+?`{3}/g, function (match) {
@@ -149,27 +149,25 @@ function md0(markdownContent, option) {
       cacheMap[index] = match.replace(/&/g, '&amp;')
       return `$CODE${index++}EDOC$`
     })
+    // 处理转义
+    .replace(/\\(.)/g, function (match, ch) {
+      cacheMap[index] = ch
+      return `$CACHE${index++}EHCAC$`
+    })
 
+    // 处理剩下内容中的html
+    .replace(/<\/?([a-z0-9_-]+?)(\s+.+?)?>/g, function (match) {
+      cacheMap[index] = match
+      return `$CACHE${index++}EHCAC$`
+    })
 
-  // 处理转义
-  markdownContent = markdownContent.replace(/\\(.)/g, function (match, ch) {
-    cacheMap[index] = ch
-    return `$CACHE${index++}EHCAC$`
-  })
-
-  // 处理剩下内容中的html
-  markdownContent = markdownContent.replace(/<\/?([a-z0-9_-]+?)(\s+.+?)?>/g, function (match) {
-    cacheMap[index] = match
-    return `$CACHE${index++}EHCAC$`
-  })
-
-  // 处理引用
-  markdownContent = markdownContent.replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
-    if (!name) {
-      return match
-    }
-    return `$REF${index++}FER$`
-  })
+    // 处理引用
+    .replace(/&([a-z\-_0-9]+?)&/ig, function (match, name) {
+      if (!name) {
+        return match
+      }
+      return `$REF${index++}FER$`
+    })
 
   // 是否有 [toc] （目录标记）
   const renderCatalog = /\[toc]/i.test(markdownContent)

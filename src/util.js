@@ -1,48 +1,52 @@
 /**
  * 获取行的类型
- * @param str
+ * @param row
+ * @param nextRow
  * @return {string}
  */
-export function getRowType(str) {
-  str = str.replace(/^\s*/g, '')
+export function getRowType(row, nextRow) {
+  row = row.replace(/^\s*/g, '')
 
-  if (/^\s*```/.test(str)) {
+  if (/^\s*```/.test(row)) {
     return 'codeblock'
   }
 
-  if (/^#/.test(str)) {
+  if (/^#/.test(row)) {
     return 'title'
   }
 
-  if (/^\|/.test(str)) {
-    return 'table'
+  if (/^\|/.test(row)) {
+    if (nextRow && /^\|\s*:?-+/.test(nextRow)) {
+      return 'table-header'
+    }
+    return 'table-row'
   }
 
-  if (/^(-|\*|[0-9]+\.?)\s/.test(str)) {
+  if (/^(-|\*|[0-9]+\.?)\s/.test(row)) {
     return 'list'
   }
 
-  if (/^>/.test(str)) {
+  if (/^>/.test(row)) {
     return 'blockquote'
   }
 
-  if (/^---/.test(str)) {
+  if (/^---/.test(row)) {
     return 'line'
   }
 
-  if (/^\[ \]/.test(str)) {
+  if (/^\[ \]/.test(row)) {
     return 'check'
   }
 
-  if (/^\[x\]/.test(str)) {
+  if (/^\[x\]/.test(row)) {
     return 'checked'
   }
 
-  if (/^&&&/.test(str)) {
+  if (/^&&&/.test(row)) {
     return 'reference'
   }
 
-  if (!str) {
+  if (!row) {
     return 'newline'
   }
 }
