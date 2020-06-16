@@ -76,8 +76,8 @@ export function getOption(option, customize) {
   const result = {}
 
   setMergedOption(result, option, customize, 'titleAnchor', true)
-  setMergedOption(result, option, customize, 'codeIndex', true)
-  setMergedOption(result, option, customize, 'codeHeader', true)
+  setMergedOption(result, option, customize, 'codeIndex', false)
+  setMergedOption(result, option, customize, 'codeHeader', false)
   setMergedOption(result, option, customize, 'codeHeight', 0)
   setMergedOption(result, option, customize, 'catalog', false)
   setMergedOption(result, option, customize, 'useHljs', false)
