@@ -8,7 +8,7 @@ export default {
       // inline code
       // 代码永远优先
       .replace(/(`)(.+?)\1/g, function (match, group1, group2) {
-        const html = `${makeTag('span', 'code-inline', option)}${group2.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`
+        const html = `${makeTag('code', 'code-inline', option)}${group2.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`
         const placeholder = `@${i++}@`
         buffer[placeholder] = option.render ? option.render('common', html, match) : html
         return placeholder
@@ -36,14 +36,14 @@ export default {
       // hyper link
       // 处理未使用 []() 格式的超链接为 []() 格式
       .replace(/([^[('"])((ftp|https?):\/\/[a-z0-9\-_%/\\?&.!@#$()\[\]|,<>{}:]+)/ig, function (match, group1, group2, group3) {
-        return `${group1}[${group2}](${group2})`
+        return `${group1}[](${group2})`
       })
       // hyper link
-      .replace(/\[(.*?)\]\((.*?)\)/g, function (match, group1, group2) {
+      .replace(/\[(.*?)]\((.*?)\)/g, function (match, group1, group2) {
         const html = `${makeTag('a', {
           href: group2,
           class: 'link'
-        }, option)}${group1}</a>`
+        }, option)}${group1 || group2}</a>`
         return option.render ? option.render('common', html, match) : html
       })
       // bold
