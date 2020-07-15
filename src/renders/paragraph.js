@@ -34,10 +34,10 @@ export default {
     for (; index < rows.length; index++) {
       const row = rows[index]
       const type = getRowType(row)
-      if (['codeblock', 'list', 'table', 'newline', 'title', 'blockquote'].indexOf(type) !== -1) {
+      if (['codeblock', 'list', 'table-header','table-row', 'newline', 'title', 'blockquote'].indexOf(type) !== -1) {
         break
       }
-      temp.push(renders[type || 'common'].render(row, option))
+      temp.push(`${renders[type || 'common'].render(row, option)}`)
     }
     return [--index, temp]
   }

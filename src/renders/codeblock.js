@@ -64,7 +64,7 @@ export default {
     } else {
       html.push(makeTag('div', 'code-block-content', option))
       rows.forEach((str) => {
-        html.push(`${makeTag('div', 'code-block-line', option)}${rowFilter(str, indent, true)}</div>`)
+        html.push(`${makeTag('div', 'code-block-line', option)}<code>${rowFilter(str, indent, true)}</code></div>`)
       })
       html.push('</div>')
     }

@@ -26,7 +26,7 @@ export default {
     })
     const html = `${makeTag('blockquote', {
       class: 'blockquote',
-      style: `margin-left: ${indent}em`
+      style: !option.clean || indent ? `margin-left: ${indent}em` : ''
     }, option)}${rows.join('')}</blockquote>`
     return option.render ? option.render('blockquote', html, rows) : html
   }
