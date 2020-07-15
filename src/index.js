@@ -168,7 +168,7 @@ function md0(markdownContent, option) {
       if (!name) {
         return match
       }
-      return `$REF${index++}FER$`
+      return `$REF${name}FER$`
     })
 
   // 是否有 [toc] （目录标记）
