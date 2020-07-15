@@ -115,6 +115,7 @@ md0 /path/to --output dist
 |codeIndex|Boolean|true|是否在代码块前面显示行号|
 |codeHeight|Number|0|代码块的最大高度，单位为`px`，为0表示不限制|
 |titleAnchor|Boolean|true|是否在标题前显示导航锚点|
+|clean|Boolean|false|是否渲染为清洁模式，清洁模式时会保留浏览器的默认样式|
 |catalog|Boolean|false|是否生成目录|
 |useHljs|Boolean|false|是否使用`highlight.js`高亮代码|
 |render|function(type, html, data)|-|自定义内容渲染器|
@@ -169,6 +170,7 @@ md0 添加有实用的`引用`功能，用于块或结构化内容的引用
 
 ## TODO
 
+- [ ] 【重要】列表渲染还有问题
 - [ ] 输出时不附加样式(代码块不添加额外样式)，以及对代码块的html标签简化
 - [ ] CLI 支持处理时同时复制引用的资源（图片等）到输出目录
 - [ ] CLI 添加 `watch` 选项以支持实时渲染

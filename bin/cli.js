@@ -97,6 +97,7 @@ input 要转换的markdown文件/目录
 options
 - output 输出目录，默认为 output
 - title 指定输出文件的 title，不指定时使用文件名
+- clean 是否渲染为清洁模式，清洁模式时会保留浏览器的默认样式，默认为 true
 - code-header 是否渲染代码块头，默认为 true
 - code-index 是否渲染代码行号，默认为 true
 - code-height 设置代码块最大高度，单位为像素，设置为 0 时表示自动调整。默认为 0
@@ -135,6 +136,7 @@ options
       codeHeight: getOptionValue('code-height', 0),
       codeIndex: getOptionValue('code-index', true),
       codeHeader: getOptionValue('code-header', true),
+      clean: getOptionValue('clean', false),
       catalog: getOptionValue('catalog', false),
       useHljs: getOptionValue('use-hljs', false),
       titleAnchor: getOptionValue('title-anchor', true),

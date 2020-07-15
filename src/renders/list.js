@@ -1,4 +1,4 @@
-import {getRowType, removeEmptyRows} from '../util'
+import {getRowType, makeTag, removeEmptyRows} from '../util'
 import codeblock from './codeblock'
 import blockquote from './blockquote'
 import table from './table'
@@ -58,7 +58,7 @@ export default {
     const indentStack = []
     let subType
 
-    const html = [`<${type} class="md0-list md0-list-level-${level}">`]
+    const html = [makeTag(type, `list list-level-${level}`, option)]
 
     const buffer = []
 
@@ -71,7 +71,7 @@ export default {
         // 下级列表开始
         typeStack.push(subType)
         indentStack.push(itemIndent)
-        html.push(`<${subType} class="md0-list md0-list-level-${++level}">`)
+        html.push(makeTag(subType, `list list-level-${++level}`, option))
       } else if (itemIndent < indent) {
         // 下级列表结束
         while (true) {
@@ -107,7 +107,7 @@ export default {
         row = buffer.join('')
         buffer.length = 0
       }
-      html.push(`<li class="md0-list-item">${row}</li>`)
+      html.push(`${makeTag('li', 'list-item', option)}${row}</li>`)
     }
 
     html.push(`</${type}>`)

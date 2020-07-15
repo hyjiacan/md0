@@ -1,8 +1,8 @@
-import {getRowType, removeEmptyRows} from '../util'
+import {getRowType, makeTag, removeEmptyRows} from '../util'
 import common from './common'
 
 export default {
-  get (rows, index) {
+  get(rows, index) {
     const temp = [rows[index++]]
     for (; index < rows.length; index++) {
       const row = rows[index]
@@ -13,25 +13,28 @@ export default {
     }
     return [--index, temp]
   },
-  render (rows, option) {
+  render(rows, option) {
     // remove empty rows
     rows = removeEmptyRows(rows)
-    const html = ['<table class="md0-table">']
+    const html = [makeTag('table', 'table', option)]
     const header = rows.shift().split('|')
     const align = rows.shift().split('|').map((col) => {
       if (/^\s*:-+:\s*$/.test(col)) {
-        return 'md-0-table-align-center'
+        return 'center'
       }
 
       if (/^\s*-+:\s*$/.test(col)) {
-        return 'md-0-table-align-right'
+        return 'right'
       }
-      return 'md-0-table-align-left'
+      return 'left'
     })
     html.push('<thead><tr>')
     let i
     for (i = 1; i < header.length - 1; i++) {
-      html.push(`<th class="md0-table-cell ${align[i]}">${common.render(header[i], option)}</th>`)
+      html.push(`${makeTag('th', {
+        class: 'table-cell',
+        style: `text-align: ${align[i]}`
+      }, option)}${common.render(header[i], option)}</th>`)
     }
     html.push('</tr></thead>')
     html.push('<tbody>')
@@ -39,7 +42,10 @@ export default {
       const row = rows[i].split('|')
       html.push('<tr>')
       for (let j = 1; j < header.length - 1; j++) {
-        html.push(`<td class="md0-table-cell ${align[j]}">${common.render(row[j], option)}</td>`)
+        html.push(`${makeTag('td', {
+          class: 'table-cell',
+          style: `text-align: ${align[j]}`
+        }, option)}${common.render(row[j], option)}</td>`)
       }
       html.push('</tr>')
     }

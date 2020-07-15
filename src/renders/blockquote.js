@@ -1,5 +1,5 @@
 import common from './common'
-import {getRowType} from '../util'
+import {getRowType, makeTag} from '../util'
 
 export default {
   get(rows, index) {
@@ -24,7 +24,10 @@ export default {
     rows = rows.map((str) => {
       return common.render(str.replace(/^\s*>/, ''), option)
     })
-    const html = `<blockquote class="md0-blockquote" style="margin-left: ${indent}em">${rows.join('')}</blockquote>`
+    const html = `${makeTag('blockquote', {
+      class: 'blockquote',
+      style: `margin-left: ${indent}em`
+    }, option)}${rows.join('')}</blockquote>`
     return option.render ? option.render('blockquote', html, rows) : html
   }
 }

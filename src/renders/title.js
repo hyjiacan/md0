@@ -1,7 +1,8 @@
 import common from './common'
+import {makeTag} from '../util'
 
 export default {
-  render (str, option, catalog) {
+  render(str, option, catalog) {
     // console.log(str)
     str = str.replace(/^\s*/g, '')
     let text = str.replace(/#/g, '')
@@ -14,9 +15,14 @@ export default {
       level: level,
       text: pureText
     })
-    const anchor = option.titleAnchor ? `<a href="#${pureText}" class="md0-title-anchor"></a>` : ''
-    const html = `<${tag} id="${pureText}" class="md0-title-${tag}">${anchor}
-    <span class="md0-title-text">${text.replace(/^\s+/, '')}</span></${tag}>`
+    const anchor = option.titleAnchor ? `<a href="#${pureText}">#</a>` : ''
+    const html = `${makeTag(tag, {
+      id: pureText,
+      class: `title-${tag}`
+    }, option)}
+${anchor}
+${makeTag('span', 'title-text', option)}
+${text.replace(/^\s+/, '')}</span></${tag}>`
 
     return option.render ? option.render('title', html, str) : html
   }

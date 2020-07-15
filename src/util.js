@@ -80,6 +80,7 @@ export function getOption(option, customize) {
   setMergedOption(result, option, customize, 'codeHeader', false)
   setMergedOption(result, option, customize, 'codeHeight', 0)
   setMergedOption(result, option, customize, 'catalog', false)
+  setMergedOption(result, option, customize, 'clean', false)
   setMergedOption(result, option, customize, 'useHljs', false)
   setMergedOption(result, option, customize, 'emojis', {})
   setMergedOption(result, option, customize, 'emojiSize', '18px')
@@ -99,4 +100,27 @@ export function rowFilter(row, indent, space) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
   return space ? temp.replace(/ /g, '&nbsp;') : temp
+}
+
+export function makeTag(tag, classNameOrAttrs, option) {
+  if (typeof classNameOrAttrs === 'string') {
+    classNameOrAttrs = {
+      class: classNameOrAttrs
+    }
+  }
+  if (option.clean) {
+    delete classNameOrAttrs.class
+  } else if (classNameOrAttrs.class) {
+    classNameOrAttrs.class = classNameOrAttrs.class.split(' ')
+      .map(item => `md0-${item}`).join(' ')
+  }
+  const temp = []
+  for (const name in classNameOrAttrs) {
+    temp.push(`${name}="${classNameOrAttrs[name]}"`)
+  }
+  if (!temp.length) {
+    return `<${tag}>`
+  }
+
+  return `<${tag} ${temp.join(' ')}>`
 }

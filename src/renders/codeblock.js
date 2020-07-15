@@ -1,7 +1,7 @@
-import {getRowType, rowFilter} from '../util'
+import {getRowType, makeTag, rowFilter} from '../util'
 
 export default {
-  get (rows, index) {
+  get(rows, index) {
     const temp = [rows[index++]]
     for (; index < rows.length; index++) {
       const row = rows[index]
@@ -12,7 +12,7 @@ export default {
     }
     return [index, temp]
   },
-  render (rows, option) {
+  render(rows, option) {
     // remove empty rows
     // rows = removeEmptyRows(rows)
     // remove the 1st row and get the language
@@ -27,35 +27,44 @@ export default {
     // remove the last row
     rows.pop()
 
-    const html = [`<div class="md0-code-block" data-lang="${lang}">`]
+    const html = [makeTag('div', {
+      class: 'code-block',
+      'data-lang': lang
+    }, option)]
     if (option.codeHeader) {
-      html.push(`<div class="md0-code-block-header"><span class="md0-code-block-lang">${lang}</span></div>`)
+      html.push(`${makeTag('div', 'code-block-header', option)}${makeTag('span', 'code-block-lang', option)}${lang}</span></div>`)
     }
     let style = ''
     if (option.codeHeight) {
       style = `overflow: auto; max-height: ${option.codeHeight}px`
     }
-    html.push(`<div class="md0-code-block-body" style="${style}">`)
+    html.push(makeTag('div', {
+      class: 'code-block-body',
+      style
+    }, option))
     // 行号
     if (option.codeIndex) {
-      html.push('<div class="md0-code-block-gutter">')
+      html.push(makeTag('div', 'code-block-gutter', option))
       rows.forEach((str, i) => {
-        html.push(`<span class="md0-code-block-rowindex">${i + 1}</span>`)
+        html.push(`${makeTag('span', 'code-block-rowindex', option)}${i + 1}</span>`)
       })
       html.push('</div>')
     }
     if (option.useHljs) {
-      html.push(`<pre class="md0-code-block-content" style="${style}"><code class="${lang}">`)
+      html.push(`${makeTag('pre', {
+        class: 'code-block-content',
+        style
+      }, option)}<code class="${lang}">`)
 
       rows.forEach((str) => {
         // 移除多余的缩进
-        html.push(rowFilter(str, indent, true))
+        html.push(rowFilter(str.replace(/&nbsp;/g, ' '), indent, true))
       })
       html.push('</code></pre>')
     } else {
-      html.push('<div class="md0-code-block-content">')
+      html.push(makeTag('div', 'code-block-content', option))
       rows.forEach((str) => {
-        html.push(`<div class="md0-code-block-line">${rowFilter(str, indent, true)}</div>`)
+        html.push(`${makeTag('div', 'code-block-line', option)}${rowFilter(str, indent, true)}</div>`)
       })
       html.push('</div>')
     }

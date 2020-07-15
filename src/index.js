@@ -1,4 +1,4 @@
-import {getOption, getRowType} from './util'
+import {getOption, getRowType, makeTag} from './util'
 
 import reference from './renders/reference'
 import title from './renders/title'
@@ -78,7 +78,7 @@ function renderRows(rows, refMap, option, catalog) {
 
     if (!type) {
       type = 'common'
-      html.push('<div class="md0-paragraph">')
+      html.push(makeTag('div', 'paragraph', option))
     } else {
       // console.log(i, 'render', type)
     }
@@ -91,7 +91,7 @@ function renderRows(rows, refMap, option, catalog) {
   return html.join('\n')
 }
 
-function processCodeBlock() {
+function processCodeBlock(option) {
   if (hljs) hljs.initHighlighting()
   const codes = document.querySelectorAll('pre>code')
   codes.forEach(function (codeBlock) {
@@ -99,7 +99,9 @@ function processCodeBlock() {
     const lines = content.split(/\n/g)
     lines.shift()
     lines.pop()
-    codeBlock.innerHTML = '<div class="md0-code-block-line">' + lines.join('</div><div class="md0-code-block-line">') + '</div>'
+    codeBlock.innerHTML = lines.map(line => {
+      return `${makeTag('div', 'code-block-line', option)}${line}</div>`
+    }).join('\n')
   })
 }
 
@@ -182,7 +184,7 @@ function md0(markdownContent, option) {
 
   const rows = markdownContent.split(/\$LF@@FL\$/g)
 
-  const html = ['<div class="md0-container">']
+  const html = [makeTag('div', 'container', option)]
 
   option = getOption(option)
 
@@ -198,8 +200,8 @@ function md0(markdownContent, option) {
     })
 
   if (option.catalog || renderCatalog) {
-    const catalogHtml = '<ul class="md0-catalog">\n' + catalogData.map(function (h) {
-      return `<li><a href="#${h.text}">${catalog.fillDots(h.level)}# ${h.text}</a></li>`
+    const catalogHtml = `${makeTag('ul', 'catalog', option)}\n` + catalogData.map(function (h) {
+      return `<li><a href="#${h.text}">${catalog.fillDots(h.level, option)}# ${h.text}</a></li>`
     }).join('\n') + '</ul>\n'
 
     if (renderCatalog) {
@@ -215,12 +217,12 @@ function md0(markdownContent, option) {
   // 处理 highlight.js 渲染后的代码行
   if (global.window !== global) {
     // node 环境
-    return temp + ['<' + 'script>', processCodeBlock.toString(), processCodeBlock.name, '();</' + 'script>'].join('')
+    return temp + ['<' + 'script>', processCodeBlock.toString(), processCodeBlock.name, '(JSON.stringify(option);</' + 'script>'].join('')
   }
   // 浏览器环境
   // 等待DOM渲染完成再调用
   setTimeout(function () {
-    processCodeBlock()
+    processCodeBlock(option)
   }, 100)
   return temp
 }

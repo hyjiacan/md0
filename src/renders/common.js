@@ -1,3 +1,5 @@
+import {makeTag} from '../util'
+
 export default {
   render(str, option) {
     const buffer = {}
@@ -6,7 +8,7 @@ export default {
       // inline code
       // 代码永远优先
       .replace(/(`)(.+?)\1/g, function (match, group1, group2) {
-        const html = `<span class="md0-code-inline">${group2.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`
+        const html = `${makeTag('span', 'code-inline', option)}${group2.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`
         const placeholder = `@${i++}@`
         buffer[placeholder] = option.render ? option.render('common', html, match) : html
         return placeholder
@@ -38,7 +40,10 @@ export default {
       })
       // hyper link
       .replace(/\[(.*?)\]\((.*?)\)/g, function (match, group1, group2) {
-        const html = `<a href="${group2}" class="md0-link">${group1}</a>`
+        const html = `${makeTag('a', {
+          href: group2,
+          class: 'link'
+        }, option)}${group1}</a>`
         return option.render ? option.render('common', html, match) : html
       })
       // bold
@@ -53,7 +58,7 @@ export default {
       })
       // Strikethrough
       .replace(/([-~]{2})(.+?)\1/g, function (match, group1, group2) {
-        const html = `<span class="md0-strikethrough">${group2}</span>`
+        const html = `${makeTag('span', 'strikethrough', option)}${group2}</span>`
         return option.render ? option.render('common', html, match) : html
       })
 
@@ -61,5 +66,4 @@ export default {
       return buffer[match]
     })
   }
-
 }
