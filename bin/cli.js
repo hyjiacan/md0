@@ -54,7 +54,7 @@ function parse(inputFile, outputFile, option) {
   const markdownHtml = md0(content, option)
 
   const title = option.title || path.basename(inputFile, path.extname(inputFile))
-  const css = fs.readFileSync(path.join(__dirname, '../dist/md0.css'), {
+  const css = option.clean ? '' : fs.readFileSync(path.join(__dirname, '../dist/md0.css'), {
     encoding: 'utf-8'
   })
 
