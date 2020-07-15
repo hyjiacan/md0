@@ -1,4 +1,4 @@
-import {getRowType, makeTag, removeEmptyRows} from '../util'
+import {getRowType, makeTag} from '../util'
 import codeblock from './codeblock'
 import blockquote from './blockquote'
 import table from './table'
@@ -48,7 +48,7 @@ export default {
   },
   render(rows, option) {
     // remove empty rows
-    rows = removeEmptyRows(rows)
+    // rows = removeEmptyRows(rows)
     const firstItem = rows[0]
     let indent = firstItem.length - firstItem.replace(/^\s+/, '').length
     const regUl = /^\s*[*-]\s/
@@ -108,6 +108,10 @@ export default {
         buffer.length = 0
       }
       html.push(`${makeTag('li', 'list-item', option)}${row}</li>`)
+    }
+
+    while (typeStack.length) {
+      html.push(`</${typeStack.pop()}>`)
     }
 
     html.push(`</${type}>`)
