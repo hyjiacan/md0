@@ -15,7 +15,10 @@ export default {
       level: level,
       text: pureText
     })
-    const anchor = option.titleAnchor ? `<a href="#${pureText}">#</a>` : ''
+    const anchor = option.titleAnchor ? `${makeTag('a', {
+      href: `#${pureText}`,
+      class: 'title-anchor'
+    }, option)}</a>` : ''
     const html = `${makeTag(tag, {
       id: pureText,
       class: `title-${tag}`

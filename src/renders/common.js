@@ -24,7 +24,7 @@ export default {
         return `<img src="${img}" alt="${group1}" width="${option.emojiSize}" height="${option.emojiSize}" />`
       })
       // image
-      .replace(/!\[(.+?)\]\((.*?)\)/g, function (match, group1, group2) {
+      .replace(/!\[(.+?)]\((.*?)\)/g, function (match, group1, group2) {
         const html = `<img src="${group2}" alt="${group1}" />`
         return option.render ? option.render('common', html, match) : html
       })
@@ -40,8 +40,10 @@ export default {
       })
       // hyper link
       .replace(/\[(.*?)]\((.*?)\)/g, function (match, group1, group2) {
+        const placeholder = `@${i++}@`
+        buffer[placeholder] = group2
         const html = `${makeTag('a', {
-          href: group2,
+          href: placeholder,
           class: 'link'
         }, option)}${group1 || group2}</a>`
         return option.render ? option.render('common', html, match) : html

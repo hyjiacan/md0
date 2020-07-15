@@ -139,6 +139,12 @@ function md0(markdownContent, option) {
       return '$LF@@FL$'
     })
 
+    // 处理转义
+    .replace(/\\([\[\]{}()`*&|#])/g, function (match, ch) {
+      cacheMap[index] = ch
+      return `$CACHE${index++}EHCAC$`
+    })
+
     // 将代码先处理
     // 代码块
     // 需要在行内代码前处理
@@ -146,15 +152,11 @@ function md0(markdownContent, option) {
       cacheMap[index] = match.replace(/&/g, '&amp;')
       return `$CODE${index++}EDOC$`
     })
+
     // 行内代码
     .replace(/`.+?`/g, function (match) {
       cacheMap[index] = match.replace(/&/g, '&amp;')
       return `$CODE${index++}EDOC$`
-    })
-    // 处理转义
-    .replace(/\\(.)/g, function (match, ch) {
-      cacheMap[index] = ch
-      return `$CACHE${index++}EHCAC$`
     })
 
     // 处理剩下内容中的html
