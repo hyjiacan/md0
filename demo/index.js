@@ -23,7 +23,8 @@ emojis = JSON.parse(emojis)
 const html = md0(content, {
   useHljs: window.location.search.indexOf('useHljs') !== -1,
   catalog: window.location.search.indexOf('catalog') !== -1,
-  emojis
+  emojis,
+  clean: window.location.search.indexOf('clean') !== -1
 })
 
 const app = document.querySelector('#app')

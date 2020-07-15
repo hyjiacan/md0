@@ -6,6 +6,8 @@
 
 - [显示目录](./?catalog#md0)
 - [不显示目录](./#md0)
+- [内置样式模式](./#md0)
+- [清洁模式](./?clean#md0)
 
 GIT仓库
 
@@ -225,7 +227,7 @@ class Bar():
 ## emoji
 
 - :+1::-1::100:
-- :woman_office_worker:
+- :woman_office_worker::man_office_worker:
 
 ## 引用
 
@@ -237,7 +239,6 @@ class Bar():
 |---|---|---|
 |-|-|-|
 &&&
-
 
 &&&theList
 - item1
@@ -269,7 +270,7 @@ $.get('/path/to/url', {
   keyword: 'md0',
 }, function(response) {
   //
-}
+})
 ```
 &&&
 
