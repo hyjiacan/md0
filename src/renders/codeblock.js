@@ -43,7 +43,7 @@ export default {
       style
     }, option))
     // 行号
-    if (option.codeIndex) {
+    if (!option.clean && option.codeIndex) {
       html.push(makeTag('div', 'code-block-gutter', option))
       rows.forEach((str, i) => {
         html.push(`${makeTag('span', 'code-block-rowindex', option)}${i + 1}</span>`)
