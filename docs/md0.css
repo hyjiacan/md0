@@ -1,6 +1,4 @@
 .md0-catalog {
-  width: 800px;
-  margin: 0 auto;
   list-style: none;
   background-color: #faf9f9;
   box-sizing: border-box;
@@ -36,8 +34,6 @@
   color: #444;
   padding: 0 5px 80px 20px;
   box-sizing: border-box;
-  width: 800px;
-  margin: 0 auto;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
 }
@@ -215,21 +211,8 @@
   padding: 5px 2px;
   line-height: 24px;
 }
-.md-0-table-align-left {
-  text-align: left;
-}
-.md-0-table-align-center {
-  text-align: center;
-}
-.md-0-table-align-right {
-  text-align: right;
-}
 /* For highlight js */
 pre.md0-code-block-content {
   margin: 0;
-}
-code.hljs {
-  background-color: #fdfdeb;
-  padding: 0;
 }
 
