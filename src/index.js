@@ -93,16 +93,16 @@ function renderRows(rows, refMap, option, catalog) {
 
 function processCodeBlock(option) {
   if (hljs) hljs.initHighlighting()
-  const codes = document.querySelectorAll('pre>code')
-  codes.forEach(function (codeBlock) {
-    const content = codeBlock.innerHTML
-    const lines = content.split(/\n/g)
-    lines.shift()
-    lines.pop()
-    codeBlock.innerHTML = lines.map(line => {
-      return `${makeTag('div', 'code-block-line', option)}${line}</div>`
-    }).join('\n')
-  })
+  // const codes = document.querySelectorAll('pre>code')
+  // codes.forEach(function (codeBlock) {
+  //   const content = codeBlock.innerHTML
+  //   const lines = content.split(/\n/g)
+  //   lines.shift()
+  //   lines.pop()
+  //   codeBlock.innerHTML = lines.map(line => {
+  //     return `${makeTag('div', 'code-block-line', option)}${line}</div>`
+  //   }).join('\n')
+  // })
 }
 
 

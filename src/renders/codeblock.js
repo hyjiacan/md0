@@ -58,7 +58,7 @@ export default {
 
       rows.forEach((str) => {
         // 移除多余的缩进
-        html.push(rowFilter(str.replace(/&nbsp;/g, ' '), indent, true))
+        html.push(rowFilter(str, indent, false))
       })
       html.push('</code></pre>')
     } else {
