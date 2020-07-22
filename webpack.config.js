@@ -74,6 +74,9 @@ const distConfig = {
       ]
     }, babelLoader]
   },
+  optimization: {
+    // minimize: false
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
