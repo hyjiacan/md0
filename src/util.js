@@ -15,6 +15,10 @@ export function getRowType(row, nextRow) {
     return 'ref'
   }
 
+  if (/^\s*\[toc]\s*$/i.test(row)) {
+    return 'toc'
+  }
+
   if (/^\s*(([*-]\s*){3,})$/.test(row)) {
     return 'line'
   }

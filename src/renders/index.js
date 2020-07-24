@@ -29,13 +29,6 @@ function renderRows(rows, refMap, option, catalog) {
       continue
     }
 
-    if (type === 'ref') {
-      const {id, href, title} = /^\[(?<id>.+?)]:\s*(?<href>[\S]+)(\s*(['"])(?<title>.+?)\4)?\s*$/.exec(row).groups
-      refMap[`${id}-href`] = href
-      refMap[`${id}-title`] = title || ''
-      continue
-    }
-
     if (type === 'title') {
       html.push(title.render(row, option, catalog))
       continue
@@ -65,6 +58,19 @@ function renderRows(rows, refMap, option, catalog) {
     if (type === 'newline') {
       [i, buffer] = empty.get(rows, i)
       html.push(newline.render(buffer, option))
+      continue
+    }
+
+    if (type === 'ref') {
+      const {id, href, title} = /^\[(?<id>.+?)]:\s*(?<href>[\S]+)(\s*(['"])(?<title>.+?)\4)?\s*$/.exec(row).groups
+      refMap[`${id}-href`] = href
+      refMap[`${id}-title`] = title || ''
+      continue
+    }
+
+    if (type === 'toc') {
+      option.catalog = true
+      html.push('[toc]')
       continue
     }
 

@@ -43,7 +43,6 @@ const devConfig = {
     }, fileLoader]
   },
   plugins: [
-    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: 'md0',
       template: path.resolve(__dirname, 'demo/index.html')

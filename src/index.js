@@ -3,6 +3,7 @@ import {getOption, makeTag} from './util'
 
 import './md0.less'
 import renders from './renders'
+import catalog from './renders/catalog'
 
 function processCodeBlock(option) {
   if (hljs) hljs.initHighlighting()
@@ -42,6 +43,7 @@ function md0(markdownContent, option) {
 
   option = getOption(option)
 
+  // renderRows 可能会更新 option.catalog 的值为 true
   html.push(renders.renderRows(rows, refMap, option, catalogData))
   html.push('</div>')
 
@@ -50,17 +52,17 @@ function md0(markdownContent, option) {
       return refMap.hasOwnProperty(name) ? refMap[name] : name
     })
 
-  // if (option.catalog || renderCatalog) {
-  //   const catalogHtml = `${makeTag('ul', 'catalog', option)}\n` + catalogData.map(function (h) {
-  //     return `<li><a href="#${h.text}">${catalog.fillDots(h.level, option)}# ${h.text}</a></li>`
-  //   }).join('\n') + '</ul>\n'
-  //
-  //   if (renderCatalog) {
-  //     temp = temp.replace('@CATALOG-TOC-GOLATAC@', catalogHtml)
-  //   } else {
-  //     temp = (option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml) + temp
-  //   }
-  // }
+  if (option.catalog) {
+    const catalogHtml = `${makeTag('ul', 'catalog', option)}\n` + catalogData.map(function (h) {
+      return `<li><a href="#${h.text}">${catalog.fillDots(h.level, option)}# ${h.text}</a></li>`
+    }).join('\n') + '</ul>\n'
+
+    if (/\[toc]/.test(temp)) {
+      temp = temp.replace('[toc]', catalogHtml)
+    } else {
+      temp = (option.render ? option.render('catalog', catalogHtml, catalogData) : catalogHtml) + temp
+    }
+  }
 
   if (!option.useHljs) {
     return temp
