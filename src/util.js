@@ -11,6 +11,10 @@ export function getRowType(row, nextRow) {
     return 'codeblock'
   }
 
+  if (/^(([*-]\s*){3,})$/.test(row)) {
+    return 'line'
+  }
+
   if (/^#/.test(row)) {
     return 'title'
   }
@@ -30,15 +34,11 @@ export function getRowType(row, nextRow) {
     return 'blockquote'
   }
 
-  if (/^---/.test(row)) {
-    return 'line'
-  }
-
-  if (/^\[ \]/.test(row)) {
+  if (/^\[ ]/.test(row)) {
     return 'check'
   }
 
-  if (/^\[x\]/.test(row)) {
+  if (/^\[x]/.test(row)) {
     return 'checked'
   }
 
