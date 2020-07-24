@@ -7,7 +7,7 @@ export default {
     index++
     for (; index < rows.length; index++) {
       const row = rows[index]
-      if (getRowType(row) === 'reference') {
+      if (getRowType(row, rows[index + 1]) === 'reference') {
         break
       }
       temp.push(row)

@@ -9,7 +9,7 @@ export default {
     for (; index < rows.length; index++) {
       const row = rows[index]
       const rowIndent = row.length - row.replace(/^\s*/, '').length
-      if (getRowType(row) === 'newline') {
+      if (getRowType(row, rows[index + 1]) === 'newline') {
         break
       }
       if (rowIndent !== indent) {

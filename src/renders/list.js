@@ -14,7 +14,7 @@ export default {
     // 遇到两个空行或隔一行后不是列表时，列表结束
     for (; index < rows.length; index++) {
       const row = rows[index]
-      const rowType = getRowType(row)
+      const rowType = getRowType(row, rows[index + 1])
       if (rowType === 'newline') {
         emptyLineCount++
         // 两个空行了
@@ -35,7 +35,7 @@ export default {
         _ = temp.pop();
         [index, buffer] = blockquote.get(rows, index)
         temp.push(_ + blockquote.render(buffer, option))
-      } else if (rowType === 'table') {
+      } else if (rowType === 'table-header') {
         _ = temp.pop();
         [index, buffer] = table.get(rows, index)
         temp.push(_ + table.render(buffer, option))
@@ -87,7 +87,7 @@ export default {
       }
       indent = itemIndent
       row = row.replace(/^\s*(\*|-|[0-9]+\.?)\s/, '')
-      const t = getRowType(row)
+      const t = getRowType(row, rows[i + 1])
       // 是否是选择列表
       if (t === 'check') {
         row = row.replace(/^\[ \]/, '')
@@ -99,7 +99,7 @@ export default {
         row = common.render(row, option)
       }
       const nextRow = rows[i + 1]
-      if (nextRow && getRowType(nextRow) !== 'list') {
+      if (nextRow && getRowType(nextRow, rows[i + 2]) !== 'list') {
         buffer.push(row)
         continue
       }

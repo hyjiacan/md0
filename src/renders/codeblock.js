@@ -6,7 +6,7 @@ export default {
     for (; index < rows.length; index++) {
       const row = rows[index]
       temp.push(row)
-      if (getRowType(row) === 'codeblock') {
+      if (getRowType(row, rows[index + 1]) === 'codeblock') {
         break
       }
     }

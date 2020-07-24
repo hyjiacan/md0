@@ -33,7 +33,7 @@ export default {
     const temp = []
     for (; index < rows.length; index++) {
       const row = rows[index]
-      const type = getRowType(row)
+      const type = getRowType(row, rows[index + 1])
       if (['codeblock', 'list', 'table-header','table-row', 'newline', 'title', 'blockquote'].indexOf(type) !== -1) {
         break
       }

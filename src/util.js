@@ -19,8 +19,8 @@ export function getRowType(row, nextRow) {
     return 'title'
   }
 
-  if (/^\|/.test(row)) {
-    if (nextRow && /^\|\s*:?-+/.test(nextRow)) {
+  if (/^\s*\|/.test(row)) {
+    if (nextRow && /^\s*\|\s*:?-{3,}/.test(nextRow)) {
       return 'table-header'
     }
     return 'table-row'
