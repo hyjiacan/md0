@@ -9,13 +9,19 @@ export default {
     for (; index < rows.length; index++) {
       const row = rows[index]
       const rowIndent = row.length - row.replace(/^\s*/, '').length
-      if (getRowType(row, rows[index + 1]) === 'newline') {
+      const rowType = getRowType(row, rows[index + 1])
+      if (rowType === 'newline' || rowType === 'line') {
         break
       }
       if (rowIndent !== indent) {
         break
       }
-      temp.push(row)
+      if (/^\s*>\s*$/.test(row)) {
+        // 换行
+        temp.push('<p></p>')
+      } else {
+        temp.push(row)
+      }
     }
     return [--index, temp]
   },

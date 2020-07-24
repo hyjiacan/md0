@@ -50,6 +50,22 @@ export default {
         // 有效的 emoji
         return `${prefix}<img src="${img}" alt="${name}" width="${option.emojiSize}" height="${option.emojiSize}" />`
       })
+      // hyper link
+      // 处理使用引用 [][] 格式的超链接为 []() 格式
+      .replace(/^\[(?<text>.*?)]\[(?<id>.*?)]/ig, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        let {text, id} = groups
+        id = id || text
+        return `[${text}]($REF${id}-hrefFER$ "$REF${id}-titleFER$")<br/>`
+      })
+      .replace(/(?<prefix>[^\\])\[(?<text>.*?)]\[(?<id>.*?)]/ig, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        let {prefix, text, id} = groups
+        id = id || text
+        return `${prefix}[${text}]($REF${id}-hrefFER$ "$REF${id}-titleFER$")<br/>`
+      })
       // image
       .replace(/^!\[(?<alt>.*?)]\((?<src>[\S]*?)(\s*(['|"])(?<title>.+?)\4)?\)/g, function () {
         const match = toArray(arguments)
@@ -66,7 +82,7 @@ export default {
         return option.render ? option.render('common', html, match) : html
       })
       // hyper link
-      // 处理未使用 <url> 格式的超链接为 []() 格式
+      // 处理使用 <url> 格式的超链接为 []() 格式
       .replace(/<(?<url>(ftp|https?):\/\/[\S]+)>/ig, function () {
         const match = toArray(arguments)
         const groups = match.pop()

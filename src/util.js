@@ -11,6 +11,10 @@ export function getRowType(row, nextRow) {
     return 'codeblock'
   }
 
+  if (/^\[.+?]:.+/.test(row)) {
+    return 'ref'
+  }
+
   if (/^\s*(([*-]\s*){3,})$/.test(row)) {
     return 'line'
   }

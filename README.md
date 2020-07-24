@@ -128,33 +128,6 @@ md0 /path/to --output dist
 
 `emoji` 列表来自 https://api.github.com/emojis，其图片为在线url
 
-## Feature
-
-md0 添加有实用的`引用`功能，用于块或结构化内容的引用
-
-定义引用块`theCode`:
-
-```markdown
-&&&theCode
-引用的内容部分
-这里面可以写表格
-|col1|col2|col3|
-|---|---|---|
-|-|-|-|
-&&&
-```
-
-> `theCode` 是引用的名称，引用名称仅支持 `[a-zA-Z_\-0-9]`
-
-引用 `theCode` 块:
-
-```markdown
-|col1|col2|col3|
-|---|---|---|
-|&theCode&|-|-|
-```
-使用 `&theCode&` 来将前面定义的引用块引用到表格内。
-
 ## 使用 `highlight.js` 高亮代码
 
 在使用时，需要自行在页面内引入 `highlight.js` 库以及其样式文件:
@@ -233,39 +206,7 @@ of dashes"/>
 其中可以包含以下类型：
 headers, lists, and code blocks
 
-#### 引用
-
-引用是为链接和图片服务的。每个引用项需要单独占用一行。其在文档中的位置不限。
-格式如下：
-```
-[id]: http://www.abc.com "title" 
-```
-
-title 必须包含引用（单引号或双引号均可）。但如果引号不匹配，那么就不解析为引用
-
-#### 链接和图片
-
-可以指定 title:
-
-```
-[link](http://www.abc.com "title")
-![alt](http://www.abc.com "title")
-```
-
-使用引用:
-
-```
-[link][id]
-![alt][id]
-# 下面是简写
-[id][]
-```
-
-还可以这么简写: `<http://example.com/>`
-
 #### 列表
-
-无序列表，可以使用 `*`, `-`, `+` 这几种符号
 
 对有序列表，可以考虑在后期添加选项以支持保留荐的原编号。
 

@@ -1,6 +1,5 @@
 import {getRowType} from '../util'
 
-import reference from './reference'
 import title from './title'
 import codeblock from './codeblock'
 import list from './list'
@@ -14,7 +13,6 @@ import checked from './checked'
 import common from './common'
 
 const renders = {
-  reference,
   title,
   codeblock,
   list,
