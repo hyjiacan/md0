@@ -24,7 +24,7 @@ export default {
         return `<img src="${img}" alt="${group1}" width="${option.emojiSize}" height="${option.emojiSize}" />`
       })
       // image
-      .replace(/!\[(.+?)]\((.*?)\)/g, function (match, group1, group2) {
+      .replace(/!\[(.*?)]\((.*?)\)/g, function (match, group1, group2) {
         const html = `<img src="${group2}" alt="${group1}" />`
         return option.render ? option.render('common', html, match) : html
       })
@@ -50,17 +50,17 @@ export default {
       })
       // bold
       .replace(/([_*]{2})(.+?)\1/g, function (match, group1, group2) {
-        const html = `<b>${group2}</b>`
+        const html = `<strong>${group2}</strong>`
         return option.render ? option.render('common', html, match) : html
       })
       // italic
       .replace(/([_*])(.+?)\1/g, function (match, group1, group2) {
-        const html = `<i>${group2}</i>`
+        const html = `<em>${group2}</em>`
         return option.render ? option.render('common', html, match) : html
       })
       // Strikethrough
       .replace(/([-~]{2})(.+?)\1/g, function (match, group1, group2) {
-        const html = `${makeTag('span', 'strikethrough', option)}${group2}</span>`
+        const html = `${makeTag('del', 'strikethrough', option)}${group2}</del>`
         return option.render ? option.render('common', html, match) : html
       })
 
