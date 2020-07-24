@@ -1,4 +1,4 @@
-import {makeTag} from '../util'
+import {makeTag, toArray} from '../util'
 
 export default {
   render(str, option) {
@@ -7,60 +7,143 @@ export default {
     const tpl = str
       // inline code
       // 代码永远优先
-      .replace(/(`)(.+?)\1/g, function (match, group1, group2) {
-        const html = `${makeTag('code', 'code-inline', option)}${group2.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`
+      .replace(/^(`{1,2})(?<code>.+?)\1/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const code = groups.code
+        const html = `${makeTag('code', 'code-inline', option)}${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`
         const placeholder = `@${i++}@`
         buffer[placeholder] = option.render ? option.render('common', html, match) : html
         return placeholder
       })
+      .replace(/(?<prefix>[^\\])(`{1,2})(?<code>.+?)\2/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, code} = groups
+        const html = `${makeTag('code', 'code-inline', option)}${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`
+        const placeholder = `@${i++}@`
+        buffer[placeholder] = option.render ? option.render('common', html, match) : html
+        return `${prefix}${placeholder}`
+      })
       // emoji
-      .replace(/:(.+?):/g, function (match, group1) {
-        const img = option.emojis[group1]
+      .replace(/^:(?<name>.+?):/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const name = groups.name
+        const img = option.emojis[name]
         // 无效的 emoji
         if (!img) {
           return match
         }
         // 有效的 emoji
-        return `<img src="${img}" alt="${group1}" width="${option.emojiSize}" height="${option.emojiSize}" />`
+        return `<img src="${img}" alt="${name}" width="${option.emojiSize}" height="${option.emojiSize}" />`
+      })
+      .replace(/(?<prefix>[^\\]):(?<name>.+?):/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, name} = groups
+        const img = option.emojis[name]
+        // 无效的 emoji
+        if (!img) {
+          return `${prefix}${match[0]}`
+        }
+        // 有效的 emoji
+        return `${prefix}<img src="${img}" alt="${name}" width="${option.emojiSize}" height="${option.emojiSize}" />`
       })
       // image
-      .replace(/!\[(.*?)]\((.*?)\)/g, function (match, group1, group2) {
-        const html = `<img src="${group2}" alt="${group1}" />`
+      .replace(/^!\[(?<alt>.*?)]\((?<src>[\S]*?)(\s*(['|"])(?<title>.+?)\4)?\)/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {alt, src, title} = groups
+        const html = `<img src="${src}" alt="${alt}" title="${title || ''}" />`
+        return option.render ? option.render('common', html, match) : html
+      })
+      .replace(/(?<prefix>[^\\])!\[(?<alt>.*?)]\((?<src>[\S]*?)(\s*(['|"])(?<title>.+?)\5)?\)/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, alt, src, title} = groups
+        const html = `${prefix}<img src="${src}" alt="${alt}" title="${title || ''}" />`
         return option.render ? option.render('common', html, match) : html
       })
       // hyper link
-      // 处理未使用 []() 格式的超链接为 []() 格式
-      .replace(/^((ftp|https?):\/\/[a-z0-9\-_%/\\?&.!@#$()\[\]|,<>{}:]+)/ig, function (match, group1, group2) {
-        return `[${group1}](${group1})<br/>`
+      // 处理未使用 <url> 格式的超链接为 []() 格式
+      .replace(/<(?<url>(ftp|https?):\/\/[\S]+)>/ig, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {url} = groups
+        return `[${url}](${url})<br/>`
       })
       // hyper link
       // 处理未使用 []() 格式的超链接为 []() 格式
-      .replace(/([^[('"])((ftp|https?):\/\/[a-z0-9\-_%/\\?&.!@#$()\[\]|,<>{}:]+)/ig, function (match, group1, group2, group3) {
-        return `${group1}[](${group2})`
+      .replace(/^(?<url>(ftp|https?):\/\/[\S]+)/ig, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {url} = groups
+        return `[${url}](${url})<br/>`
+      })
+      .replace(/(?<prefix>[^\\[(])(?<url>(ftp|https?):\/\/[\S]+)/ig, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, url} = groups
+        return `${prefix}[${url}](${url})<br/>`
       })
       // hyper link
-      .replace(/\[(.*?)]\((.*?)\)/g, function (match, group1, group2) {
+      .replace(/\[(?<text>.*?)]\((?<href>.*?)(\s*(['|"])(?<title>.+?)\4)?\)/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {text, href, title} = groups
         const placeholder = `@${i++}@`
-        buffer[placeholder] = group2
+        buffer[placeholder] = href
         const html = `${makeTag('a', {
           href: placeholder,
-          class: 'link'
-        }, option)}${group1 || group2}</a>`
+          class: 'link',
+          title: title || ''
+        }, option)}${text || href}</a>`
         return option.render ? option.render('common', html, match) : html
       })
       // bold
-      .replace(/([_*]{2})(.+?)\1/g, function (match, group1, group2) {
-        const html = `<strong>${group2}</strong>`
+      .replace(/^([_*]{2})(?<text>.+?)\1/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {text} = groups
+        const html = `<strong>${text}</strong>`
+        return option.render ? option.render('common', html, match) : html
+      })
+      .replace(/(?<prefix>[^\\])([_*]{2})(?<text>.+?)\2/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, text} = groups
+        const html = `${prefix}<strong>${text}</strong>`
         return option.render ? option.render('common', html, match) : html
       })
       // italic
-      .replace(/([_*])(.+?)\1/g, function (match, group1, group2) {
-        const html = `<em>${group2}</em>`
+      .replace(/^([_*])(?<text>.+?)\1/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {text} = groups
+        const html = `<em>${text}</em>`
+        return option.render ? option.render('common', html, match) : html
+      })
+      .replace(/(?<prefix>[^\\])([_*])(?<text>.+?)\2/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, text} = groups
+        const html = `${prefix}<em>${text}</em>`
         return option.render ? option.render('common', html, match) : html
       })
       // Strikethrough
-      .replace(/([-~]{2})(.+?)\1/g, function (match, group1, group2) {
-        const html = `${makeTag('del', 'strikethrough', option)}${group2}</del>`
+      .replace(/^([-~]{2})(?<text>.+?)\1/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {text} = groups
+        const html = `${makeTag('del', 'strikethrough', option)}${text}</del>`
+        return option.render ? option.render('common', html, match) : html
+      })
+      .replace(/(?<prefix>[^\\])([-~]{2})(?<text>.+?)\2/g, function () {
+        const match = toArray(arguments)
+        const groups = match.pop()
+        const {prefix, text} = groups
+        const html = `${prefix}${makeTag('del', 'strikethrough', option)}${text}</del>`
         return option.render ? option.render('common', html, match) : html
       })
 

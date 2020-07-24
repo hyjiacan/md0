@@ -11,7 +11,7 @@ export function getRowType(row, nextRow) {
     return 'codeblock'
   }
 
-  if (/^(([*-]\s*){3,})$/.test(row)) {
+  if (/^\s*(([*-]\s*){3,})$/.test(row)) {
     return 'line'
   }
 
@@ -26,11 +26,11 @@ export function getRowType(row, nextRow) {
     return 'table-row'
   }
 
-  if (/^(-|\*|[0-9]+\.?)\s/.test(row)) {
+  if (/^\s*(-|\*|[0-9]+\.?)\s/.test(row)) {
     return 'list'
   }
 
-  if (/^>/.test(row)) {
+  if (/^\s*>/.test(row)) {
     return 'blockquote'
   }
 
@@ -123,4 +123,11 @@ export function makeTag(tag, classNameOrAttrs, option) {
   }
 
   return `<${tag} ${temp.join(' ')}>`
+}
+
+export function toArray(arrayLike) {
+  if (Array.isArray(arrayLike)) {
+    return arrayLike
+  }
+  return Array.prototype.slice.call(arrayLike, 0)
 }
