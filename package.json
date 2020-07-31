@@ -1,6 +1,6 @@
 {
   "name": "md0",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "An ugly lib to make markdown into html",
   "bin": {
     "md0": "./bin/cli.js"
@@ -32,6 +32,7 @@
   "files": [
     "bin",
     "dist",
+    "util",
     "types",
     "README.md",
     "LICENSE"
