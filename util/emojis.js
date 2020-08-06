@@ -48,5 +48,5 @@ function storeData(content) {
     fs.mkdirSync(storePath, {recursive: true})
   }
   fs.writeFileSync(path.join(storePath, 'emojis.json'), content, {encoding: 'utf8'})
-  console.info('[md0] Emojis are available')
+  console.info('[md0] Emojis are ready to go')
 }
