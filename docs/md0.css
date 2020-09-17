@@ -56,7 +56,6 @@
   border-bottom: 1px solid #ADADAD;
 }
 .md0-strikethrough {
-  text-decoration: line-through;
   color: #666;
 }
 .md0-paragraph {
@@ -139,7 +138,7 @@
 .md0-code-block-line {
   height: 18px;
   line-height: 18px;
-  padding: 3px 5px;
+  padding: 0;
   word-break: keep-all;
   word-wrap: normal;
   white-space: nowrap;
@@ -172,6 +171,9 @@
   margin-left: -20px;
   padding-left: 20px;
   position: relative;
+}
+[class^=md0-title-h]:not(:first-child) {
+  margin-top: 2em;
 }
 [class^=md0-title-]:hover .md0-title-anchor {
   visibility: visible;

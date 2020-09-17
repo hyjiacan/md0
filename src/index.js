@@ -26,6 +26,9 @@ function processCodeBlock(option) {
  * @param {object} [option]
  */
 function md0(markdownContent, option) {
+  // 设置默认选项
+  option = getOption(option)
+
   /**
    * 引用表
    * @type {{}}
@@ -40,8 +43,6 @@ function md0(markdownContent, option) {
   const rows = markdownContent.split(/\n/g)
 
   const html = [makeTag('div', 'container', option)]
-
-  option = getOption(option)
 
   // renderRows 可能会更新 option.catalog 的值为 true
   html.push(renders.renderRows(rows, refMap, option, catalogData))

@@ -1,7 +1,8 @@
 # md0
 
 > 一个丑陋的 markdown 文档处理器
-
+>
+> 功能也不强大
 ---
 
 - [显示目录](./?catalog#md0)
@@ -11,7 +12,7 @@
 
 GIT仓库
 
-- https://gitee.com/hyjiacan/md0
+- [gitee][]
 - https://github.com/hyjiacan/md0
 
 此页面对应的 markdown 源文件
@@ -20,6 +21,8 @@ GIT仓库
 - https://gitee.com/hyjiacan/md0/raw/master/docs/sample.md
 
 > 更多信息见 [README.md](https://gitee.com/hyjiacan/md0#git-readme)
+
+[gitee]: https://gitee.com/hyjiacan/md0 "码云"
 
 ## 列表
 
@@ -88,9 +91,9 @@ _斜体文字_
 
 \*不斜体*
 
-\`不代码\`
+`代码`
 
-\``代码`
+\`不代码`
 
 ---
 
@@ -174,6 +177,15 @@ class Bar():
 
 ---
 
+\-----------
+-----------
+\***
+***
+\- - -
+- - -
+\* * * *
+* * * *
+
 ## 列表内样式
 
 - 列表项1 代码
@@ -193,9 +205,17 @@ class Bar():
 
 [超链接]()
 
-[](超_链_接*包含*特殊--字符--)
+[超链接](http://a.b.c)
 
-![图片](img.gif)
+[](http://a.b.c)
+
+<http://a.b.c>
+
+http://a.b.c
+
+[img]: img.gif
+
+![图片][img]
 
 ## 选中框
 
@@ -213,7 +233,7 @@ class Bar():
 
 |表格|此列居中对齐|此列右对齐|
 |---|:---:|---:|
-|表格|[超链接]()|![不要以为这里的图片没有加载成功，其实没有写图片路径]()|
+|表格|[超链接]()|![][img]|
 |_斜体_|*斜体*|表格|
 |**粗体**|--粗体--|表格|
 |代码: `let a = 'xxx'`|表格|> 引用内容|
@@ -232,52 +252,3 @@ class Bar():
 
 - :+1::-1::100:
 - :woman_office_worker::man_office_worker:
-
-## 引用
-
-```markdown
-&&&theTable
-引用的内容部分
-这里面可以写表格
-|col1|col2|col3|
-|---|---|---|
-|-|-|-|
-&&&
-
-&&&theList
-- item1
-- item2
-  1. item3
-  2. item4
-&&&
-```
-
-&&&theTable
-引用的内容部分
-这里面可以写表格
-|col1|col2|col3|
-|---|---|---|
-|-|-|-|
-&&&
-
-&&&theList
-- item1
-- item2
-  1. item3
-  2. item4
-&&&
-
-&&&theCode
-```javascript
-$.get('/path/to/url', {
-  id: 0,
-  keyword: 'md0',
-}, function(response) {
-  //
-})
-```
-&&&
-
-|col1|col2|col3|
-|---|---|---|
-|&theTable&|&theList&|&theCode&|
